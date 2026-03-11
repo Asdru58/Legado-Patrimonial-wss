@@ -1,0 +1,1 @@
+export { useConferencias } from "./useConferencias";
