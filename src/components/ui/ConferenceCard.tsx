@@ -1,125 +1,215 @@
-"use client";
+'use client'
 
-import type { ConferenciaConMultimedia } from "@/types";
-import { usePlayerStore } from "@/store";
+import Link from 'next/link'
+import { useCallback } from 'react'
+import type { Conferencia } from '@/types/database'
+import { tieneAudio, tieneVideo, tienePdf } from '@/types/database'
+import { usePlayerStore } from '@/store/playerStore'
 
-interface ConferenceCardProps {
-    conferencia: ConferenciaConMultimedia;
-    index?: number;
+type ConferenceCardProps = {
+  conferencia: Conferencia
+  index?: number
 }
 
-export function ConferenceCard({ conferencia, index = 0 }: ConferenceCardProps) {
-    const cargarConferencia = usePlayerStore((s) => s.cargarConferencia);
-    const play = usePlayerStore((s) => s.play);
+function formatFecha(fecha: string | null): string {
+  if (!fecha) return 'Sin fecha'
 
-    const formattedDate = new Date(conferencia.fecha_impartida).toLocaleDateString(
-        "es-ES",
-        { year: "numeric", month: "long", day: "numeric" }
-    );
+  const parsed = new Date(`${fecha}T00:00:00`)
 
-    const handlePlay = () => {
-        cargarConferencia(conferencia);
-        play();
-    };
+  if (Number.isNaN(parsed.getTime())) {
+    return fecha
+  }
 
-    const hasAudio = !!conferencia.multimedia?.audio_url;
-    const hasVideo = !!conferencia.multimedia?.video_url;
-    const hasPdf = !!conferencia.multimedia?.pdf_url;
+  return new Intl.DateTimeFormat('es-ES', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  }).format(parsed)
+}
 
-    return (
-        <article
-            className="glass-card group relative flex flex-col overflow-hidden"
-            style={{ animationDelay: `${index * 0.07}s` }}
-        >
-            {/* Top gradient accent */}
-            <div
-                className="h-1 w-full"
-                style={{
-                    background: "linear-gradient(90deg, var(--color-gold), var(--color-gold-dark), transparent)",
-                }}
-            />
+export function ConferenceCard({
+  conferencia,
+  index = 0,
+}: Readonly<ConferenceCardProps>) {
+  const playTrack = usePlayerStore((state) => state.playTrack)
 
-            <div className="flex flex-1 flex-col gap-4 p-5">
-                {/* Title */}
-                <h3
-                    className="text-lg font-bold leading-snug tracking-tight transition-colors group-hover:text-[var(--color-gold)]"
-                    style={{ color: "var(--color-text-primary)" }}
-                >
-                    {conferencia.titulo}
-                </h3>
+  const hasAudio = tieneAudio(conferencia)
+  const hasVideo = tieneVideo(conferencia)
+  const hasPdf = tienePdf(conferencia)
 
-                {/* Date & Location */}
-                <div className="flex flex-wrap items-center gap-3 text-xs" style={{ color: "var(--color-text-muted)" }}>
-                    <span className="flex items-center gap-1.5">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                        {formattedDate}
-                    </span>
-                    {conferencia.lugar && (
-                        <span className="flex items-center gap-1.5">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                                <circle cx="12" cy="10" r="3" />
-                            </svg>
-                            {conferencia.lugar}
-                        </span>
-                    )}
-                </div>
+  const handlePlay = useCallback(() => {
+    if (!conferencia.audio_url) return
 
-                {/* Media Badges */}
-                <div className="flex flex-wrap gap-2">
-                    {hasAudio && (
-                        <span className="media-badge">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                                <path d="M9 18V5l12-2v13" />
-                                <circle cx="6" cy="18" r="3" />
-                                <circle cx="18" cy="16" r="3" />
-                            </svg>
-                            Audio
-                        </span>
-                    )}
-                    {hasVideo && (
-                        <span className="media-badge">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                                <polygon points="23 7 16 12 23 17 23 7" />
-                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                            </svg>
-                            Video
-                        </span>
-                    )}
-                    {hasPdf && (
-                        <span className="media-badge">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                <polyline points="14 2 14 8 20 8" />
-                                <line x1="16" y1="13" x2="8" y2="13" />
-                                <line x1="16" y1="17" x2="8" y2="17" />
-                            </svg>
-                            PDF
-                        </span>
-                    )}
-                </div>
+    playTrack({
+      conferencia_id: conferencia.id,
+      titulo: conferencia.titulo,
+      url_audio: conferencia.audio_url,
+    })
+  }, [conferencia.id, conferencia.audio_url, conferencia.titulo, playTrack])
 
-                {/* Spacer */}
-                <div className="flex-1" />
+  return (
+    <article
+      className="glass-card group relative overflow-hidden rounded-2xl border p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+      style={{
+        borderColor: 'var(--color-border)',
+        background: 'rgba(255, 255, 255, 0.03)',
+        animationDelay: `${index * 60}ms`,
+      }}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        style={{
+          background:
+            'radial-gradient(circle at top right, rgba(212, 175, 55, 0.10), transparent 45%)',
+        }}
+      />
 
-                {/* Play Button */}
-                <button
-                    onClick={handlePlay}
-                    disabled={!hasAudio}
-                    className="btn-gold flex items-center justify-center gap-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
-                    style={{ borderRadius: "var(--radius-lg)" }}
-                >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3" />
-                    </svg>
-                    {hasAudio ? "Reproducir" : "Sin audio"}
-                </button>
-            </div>
-        </article>
-    );
+      <div className="relative z-10 flex h-full flex-col">
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p
+              className="text-xs font-semibold uppercase tracking-[0.22em]"
+              style={{ color: 'var(--color-gold)' }}
+            >
+              {formatFecha(conferencia.fecha_impartida)}
+            </p>
+
+            <Link
+              href={`/conferencia/${conferencia.slug}`}
+              className="mt-2 block text-lg font-bold leading-snug transition-opacity hover:opacity-85"
+              style={{ color: 'var(--color-text-primary)' }}
+            >
+              {conferencia.titulo}
+            </Link>
+
+            {conferencia.ponente_nombre && (
+              <p
+                className="mt-2 text-sm"
+                style={{ color: 'var(--color-text-muted)' }}
+              >
+                {conferencia.ponente_nombre}
+              </p>
+            )}
+          </div>
+
+          <Link
+            href={`/conferencia/${conferencia.slug}`}
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-all hover:-translate-y-0.5"
+            style={{
+              borderColor: 'rgba(212, 175, 55, 0.16)',
+              background: 'rgba(212, 175, 55, 0.06)',
+              color: 'var(--color-gold)',
+            }}
+            aria-label={`Abrir detalle de ${conferencia.titulo}`}
+            title="Ver detalle"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
+
+        <div className="mb-5 flex flex-wrap gap-2">
+          {hasAudio && (
+            <span
+              className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
+              style={{
+                background: 'rgba(212, 175, 55, 0.12)',
+                color: 'var(--color-gold)',
+                border: '1px solid rgba(212, 175, 55, 0.18)',
+              }}
+            >
+              Audio
+            </span>
+          )}
+
+          {hasVideo && (
+            <span
+              className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
+              style={{
+                background: 'rgba(212, 175, 55, 0.08)',
+                color: 'var(--color-text-secondary)',
+                border: '1px solid rgba(212, 175, 55, 0.12)',
+              }}
+            >
+              Video
+            </span>
+          )}
+
+          {hasPdf && (
+            <span
+              className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
+              style={{
+                background: 'rgba(212, 175, 55, 0.08)',
+                color: 'var(--color-text-secondary)',
+                border: '1px solid rgba(212, 175, 55, 0.12)',
+              }}
+            >
+              PDF
+            </span>
+          )}
+        </div>
+
+        <div className="mt-auto flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handlePlay}
+            disabled={!hasAudio}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-semibold transition-all"
+            style={{
+              background: hasAudio
+                ? 'var(--color-gold)'
+                : 'rgba(255,255,255,0.04)',
+              borderColor: hasAudio
+                ? 'rgba(212, 175, 55, 0.45)'
+                : 'rgba(255,255,255,0.08)',
+              color: hasAudio ? '#0a0a14' : 'var(--color-text-muted)',
+              cursor: hasAudio ? 'pointer' : 'not-allowed',
+              boxShadow: hasAudio
+                ? '0 10px 28px rgba(212, 175, 55, 0.18)'
+                : 'none',
+            }}
+            aria-label={
+              hasAudio
+                ? `Reproducir ${conferencia.titulo}`
+                : `Sin audio disponible para ${conferencia.titulo}`
+            }
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M8 5v14l11-7-11-7Z" />
+            </svg>
+            <span>{hasAudio ? 'Reproducir' : 'Sin audio'}</span>
+          </button>
+
+          <Link
+            href={`/conferencia/${conferencia.slug}`}
+            className="inline-flex min-h-11 items-center justify-center rounded-xl border px-4 text-sm font-medium transition-all hover:-translate-y-0.5"
+            style={{
+              background: 'rgba(255,255,255,0.03)',
+              borderColor: 'var(--color-border)',
+              color: 'var(--color-text-secondary)',
+            }}
+          >
+            Ver detalle
+          </Link>
+        </div>
+      </div>
+    </article>
+  )
 }

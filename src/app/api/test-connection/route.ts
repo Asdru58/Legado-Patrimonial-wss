@@ -143,7 +143,7 @@ export async function GET() {
                 error:
                     err instanceof Error ? err.message : 'Error desconocido',
                 diagnostico:
-                    'Error de conexión. Verifica NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY en .env.local',
+                    'Error de conexión. Verifica NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY en .env.local',
             },
             { status: 500 }
         )

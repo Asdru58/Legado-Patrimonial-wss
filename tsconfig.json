@@ -30,5 +30,17 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "files",
+    "files database",
+    "files corregidos",
+    "files legibilidad",
+    "files reg conference (1)",
+    "layout files",
+    "Nueva",
+    "scripts",
+    "page.tsx",
+    "conferences.ts"
+  ]
 }

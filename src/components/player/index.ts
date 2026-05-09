@@ -1,1 +1,1 @@
-export { PersistentPlayer } from "./PersistentPlayer";
+export { default as PersistentPlayer } from "./PersistentPlayer";

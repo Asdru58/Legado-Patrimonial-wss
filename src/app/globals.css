@@ -7,14 +7,14 @@
 
 :root {
   /* Paleta principal */
-  --color-bg-primary: #0a0a14;
+  --color-bg-primary: #050505;
   --color-bg-secondary: #1a1a2e;
   --color-bg-tertiary: #16213e;
   --color-bg-card: rgba(26, 26, 46, 0.6);
   --color-bg-glass: rgba(22, 33, 62, 0.4);
 
   /* Acentos */
-  --color-gold: #e2b857;
+  --color-gold: #D4AF37;
   --color-gold-light: #f0d080;
   --color-gold-dark: #b8942e;
 

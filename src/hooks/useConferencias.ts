@@ -2,20 +2,22 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { ConferenciaConMultimedia, Multimedia } from "@/types";
+import type { Conferencia } from "@/types/database";
 
 interface UseConferenciasResult {
-    conferencias: ConferenciaConMultimedia[];
+    conferencias: Conferencia[];
     loading: boolean;
     error: string | null;
 }
 
 /**
- * Hook para obtener conferencias con su multimedia vinculada
- * desde Supabase (client-side).
+ * Hook para obtener conferencias recientes desde Supabase (client-side).
+ *
+ * Actualizado: usa el schema plano post-R-3 (sin tabla multimedia).
+ * Trae las últimas 20 conferencias ordenadas por fecha.
  */
 export function useConferencias(): UseConferenciasResult {
-    const [conferencias, setConferencias] = useState<ConferenciaConMultimedia[]>([]);
+    const [conferencias, setConferencias] = useState<Conferencia[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -29,20 +31,28 @@ export function useConferencias(): UseConferenciasResult {
                 const { data, error: fetchError } = await supabase
                     .from("conferencias")
                     .select(`
-            id,
-            titulo,
-            fecha_impartida,
-            lugar,
-            created_at,
-            multimedia (
-              id,
-              conferencia_id,
-              audio_url,
-              video_url,
-              pdf_url
-            )
-          `)
-                    .order("fecha_impartida", { ascending: false });
+                        id,
+                        slug,
+                        titulo,
+                        extracto,
+                        descripcion,
+                        fecha_impartida,
+                        ponente_nombre,
+                        ponente_rol,
+                        audio_url,
+                        audio_duracion,
+                        pdf_url,
+                        video_provider,
+                        video_provider_id,
+                        video_status,
+                        video_fallback_provider,
+                        video_fallback_url,
+                        video_checked_at,
+                        created_at,
+                        updated_at
+                    `)
+                    .order("fecha_impartida", { ascending: false })
+                    .limit(20);
 
                 if (cancelled) return;
 
@@ -52,28 +62,7 @@ export function useConferencias(): UseConferenciasResult {
                     return;
                 }
 
-                // Supabase returns multimedia as array; take the first item
-                const mapped: ConferenciaConMultimedia[] = (data ?? []).map((item) => {
-                    const multimediaRaw = item.multimedia;
-                    let multimedia: Multimedia | null = null;
-
-                    if (Array.isArray(multimediaRaw) && multimediaRaw.length > 0) {
-                        multimedia = multimediaRaw[0] as Multimedia;
-                    } else if (multimediaRaw && !Array.isArray(multimediaRaw)) {
-                        multimedia = multimediaRaw as Multimedia;
-                    }
-
-                    return {
-                        id: item.id,
-                        titulo: item.titulo,
-                        fecha_impartida: item.fecha_impartida,
-                        lugar: item.lugar,
-                        created_at: item.created_at,
-                        multimedia,
-                    };
-                });
-
-                setConferencias(mapped);
+                setConferencias((data ?? []) as Conferencia[]);
                 setLoading(false);
             } catch (err) {
                 if (!cancelled) {

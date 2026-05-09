@@ -51,17 +51,6 @@ const navLinks = [
         ),
     },
     {
-        label: "Alabanza",
-        href: "/alabanza",
-        icon: (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 18V5l12-2v13" />
-                <circle cx="6" cy="18" r="3" />
-                <circle cx="18" cy="16" r="3" />
-            </svg>
-        ),
-    },
-    {
         label: "Podcast",
         href: "/podcast",
         icon: (
@@ -73,40 +62,8 @@ const navLinks = [
             </svg>
         ),
     },
-    {
-        label: "Radio",
-        href: "#radio",
-        icon: (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="2" />
-                <path d="M16.24 7.76a6 6 0 0 1 0 8.49" />
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                <path d="M7.76 16.24a6 6 0 0 1 0-8.49" />
-                <path d="M4.93 19.07a10 10 0 0 1 0-14.14" />
-            </svg>
-        ),
-    },
-    {
-        label: "Blog",
-        href: "/blog",
-        icon: (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-            </svg>
-        ),
-    },
 ];
 
-const adminLink = {
-    label: "Admin",
-    href: "/admin",
-    icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z" />
-        </svg>
-    ),
-};
 
 export function Navbar() {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -124,7 +81,7 @@ export function Navbar() {
         >
             <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-3 group shrink-0">
+                <Link href="/" className="flex flex-nowrap items-center gap-3 group shrink-0">
                     <div
                         className="flex h-9 w-9 items-center justify-center rounded-lg animate-border-glow"
                         style={{
@@ -137,21 +94,21 @@ export function Navbar() {
                             <path d="M2 12l10 5 10-5" />
                         </svg>
                     </div>
-                    <span className="text-lg font-bold tracking-tight" style={{ color: "var(--color-text-primary)" }}>
+                    <span className="text-lg font-bold tracking-tight whitespace-nowrap flex-shrink-0" style={{ color: "var(--color-text-primary)" }}>
                         Legado Patrimonial
                         <span className="text-gold ml-1 font-extrabold">WSS</span>
                     </span>
                 </Link>
 
                 {/* Desktop Links */}
-                <div className="hidden items-center gap-0.5 xl:flex">
+                <div className="hidden items-center gap-0.5 xl:flex flex-nowrap">
                     {navLinks.map((link) => {
                         const isHighlighted = HIGHLIGHT_LABELS.includes(link.label);
                         return (
                             <Link
                                 key={link.label}
                                 href={link.href}
-                                className={`btn-ghost text-[15px] flex items-center gap-2 relative group${isHighlighted ? " nav-highlight" : ""
+                                className={`btn-ghost text-[15px] flex items-center gap-2 whitespace-nowrap flex-shrink-0 relative group${isHighlighted ? " nav-highlight" : ""
                                     }`}
                                 style={{
                                     border: "none",
@@ -174,32 +131,6 @@ export function Navbar() {
                     })}
                 </div>
 
-                {/* Search + Admin (Desktop) */}
-                <div className="hidden items-center gap-2 xl:flex">
-                    <button
-                        className="flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-200 hover:bg-[var(--color-surface-hover)]"
-                        aria-label="Buscar"
-                    >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="11" cy="11" r="8" />
-                            <path d="m21 21-4.3-4.3" />
-                        </svg>
-                    </button>
-                    <Link
-                        href={adminLink.href}
-                        className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all duration-200 hover:opacity-90"
-                        style={{
-                            background: isActive(adminLink.href)
-                                ? "linear-gradient(135deg, var(--color-gold), var(--color-gold-dark))"
-                                : "rgba(212, 175, 55, 0.12)",
-                            color: isActive(adminLink.href) ? "#0a0a14" : "var(--color-gold)",
-                            border: "1px solid rgba(212, 175, 55, 0.25)",
-                        }}
-                    >
-                        {adminLink.icon}
-                        {adminLink.label}
-                    </Link>
-                </div>
 
                 {/* Mobile Menu Button */}
                 <button
@@ -249,26 +180,6 @@ export function Navbar() {
                             </Link>
                         ))}
 
-                        {/* Separador */}
-                        <div
-                            className="my-2"
-                            style={{ height: "1px", background: "var(--color-border)" }}
-                        />
-
-                        {/* Admin en móvil */}
-                        <Link
-                            href={adminLink.href}
-                            className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition-colors"
-                            style={{
-                                color: "var(--color-gold)",
-                                background: "rgba(212, 175, 55, 0.08)",
-                                border: "1px solid rgba(212, 175, 55, 0.2)",
-                            }}
-                            onClick={() => setMobileOpen(false)}
-                        >
-                            {adminLink.icon}
-                            Panel de Administración
-                        </Link>
                     </div>
                 </div>
             )}

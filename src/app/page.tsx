@@ -2,14 +2,14 @@
 
 import { HeroSection, DashboardGrid, ConferenceCard } from "@/components/ui";
 import { useConferencias } from "@/hooks/useConferencias";
-import { usePlayerStore } from "@/store";
+import { usePlayerStore } from "@/store/playerStore";
 
 export default function Home() {
   const { conferencias, loading, error } = useConferencias();
-  const conferenciaActiva = usePlayerStore((s) => s.conferencia_activa);
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--color-bg-primary)" }}>
+    <main className="min-h-screen" style={{ background: "var(--color-bg-primary)" }}>
       <HeroSection />
 
       {/* Dashboard Grid — Category Cards */}
@@ -19,7 +19,7 @@ export default function Home() {
       <section
         id="catalogo"
         className="mx-auto max-w-7xl px-6 py-16"
-        style={{ paddingBottom: conferenciaActiva ? "calc(var(--player-height) + 2rem)" : "4rem" }}
+        style={{ paddingBottom: currentTrack ? "calc(var(--player-height) + 2rem)" : "4rem" }}
       >
         {/* Section Header */}
         <div className="mb-10 flex items-end justify-between">
@@ -108,11 +108,11 @@ export default function Home() {
         style={{
           borderColor: "var(--color-border)",
           color: "var(--color-text-muted)",
-          paddingBottom: conferenciaActiva ? "calc(var(--player-height) + 2rem)" : "2rem",
+          paddingBottom: currentTrack ? "calc(var(--player-height) + 2rem)" : "2rem",
         }}
       >
         © {new Date().getFullYear()} Legado Patrimonial WSS · Preservando el legado espiritual
       </footer>
-    </div>
+    </main>
   );
 }

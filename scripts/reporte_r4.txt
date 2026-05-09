@@ -1,0 +1,13 @@
+REPORTE R-4 — PIPELINE DE PREPARACIÓN
+======================================
+Total registros de entrada:        5876
+Total registros limpios:           5866
+  - Completos (con fecha):         5844
+  - Parciales (sin fecha):         22
+Total registros en cuarentena:     10
+  - Por slug duplicado:            10
+  - Por título faltante:           0
+  - Por fecha no parseable:        0
+  - Por fecha fuera de rango:      0
+Colisiones de slug detectadas:     10
+======================================
