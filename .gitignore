@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Binarios de sistema y archivos de instalación
+*.msi
+*.exe
+*.dmg
+*.pkg
+*.deb
+*.rpm
+
+# Archivos comprimidos grandes (backups, dumps)
+*.zip
+*.tar.gz
+*.rar
+*.7z
