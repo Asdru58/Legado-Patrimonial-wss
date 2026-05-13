@@ -32,15 +32,6 @@
   ],
   "exclude": [
     "node_modules",
-    "files",
-    "files database",
-    "files corregidos",
-    "files legibilidad",
-    "files reg conference (1)",
-    "layout files",
-    "Nueva",
-    "scripts",
-    "page.tsx",
-    "conferences.ts"
+    ".next"
   ]
 }
