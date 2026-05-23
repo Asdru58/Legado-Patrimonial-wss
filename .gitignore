@@ -53,3 +53,20 @@ next-env.d.ts
 *.tar.gz
 *.rar
 *.7z
+
+# Artefactos locales de auditoria y documentos de trabajo
+*.mp4
+*.pdf
+*.docx
+*.sql
+*.html
+*.txt
+
+# Proxy experimental / migracion futura Next.js 16
+src/proxy.ts
+
+# Informes Markdown locales en raiz del proyecto
+/*.md
+
+# Carpetas locales de ejecucion / respaldos
+/Ejecucion Completada*/
