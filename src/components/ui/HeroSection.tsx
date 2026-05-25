@@ -43,7 +43,7 @@ export default function HeroSection() {
                         </Link>
                         <Link
                             href="/el-legado"
-                            className="inline-flex min-h-[48px] items-center rounded-md border border-[rgba(200,168,67,0.28)] px-7 py-3 font-semibold text-[#E8DCC8] transition-colors duration-200 hover:border-[#C8A843] hover:text-[#DFC06A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DFC06A]"
+                            className="inline-flex min-h-[48px] items-center rounded-md border border-[rgba(200,168,67,0.28)] px-7 py-3 font-semibold text-[#E8DCC8] transition-colors duration-200 hover:border-[#C8A843] hover:text-[#DFC06A] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DFC06A]"
                         >
                             Conocer El Legado
                         </Link>
