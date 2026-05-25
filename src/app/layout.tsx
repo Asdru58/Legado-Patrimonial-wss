@@ -22,7 +22,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 }}
             >
                 <Navbar />
-                {children}
+                <main className="pt-16">
+                    {children}
+                </main>
                 <PersistentPlayer />
             </body>
         </html>
