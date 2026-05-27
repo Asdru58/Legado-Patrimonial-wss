@@ -1,11 +1,25 @@
 import type { Metadata } from "next";
+import { EB_Garamond, Outfit } from "next/font/google";
 import "@/app/globals.css";
-import { Navbar } from "@/components/layout";
-import PersistentPlayer from "@/components/player/PersistentPlayer";
+
+const displayFont = EB_Garamond({
+    subsets: ["latin"],
+    variable: "--font-display",
+    display: "swap",
+});
+
+const bodyFont = Outfit({
+    subsets: ["latin"],
+    variable: "--font-body",
+    display: "swap",
+});
 
 export const metadata: Metadata = {
-    title: "Legado Patrimonial WSS",
-    description: "Archivo documental cronológico de conferencias, audio, video y PDF.",
+    title: {
+        default: "Legado Patrimonial El Séptimo Sello",
+        template: "%s | Legado Patrimonial El Séptimo Sello",
+    },
+    description: "Portal editorial y archivo patrimonial de conferencias, audio, video y documentos de Legado Patrimonial El Séptimo Sello.",
 };
 
 type RootLayoutProps = Readonly<{
@@ -14,18 +28,15 @@ type RootLayoutProps = Readonly<{
 
 export default function RootLayout({ children }: RootLayoutProps) {
     return (
-        <html lang="es">
+        <html lang="es" className={`${displayFont.variable} ${bodyFont.variable}`}>
             <body
+                className={bodyFont.className}
                 style={{
                     background: "var(--color-bg-primary)",
                     color: "var(--color-text-primary)",
                 }}
             >
-                <Navbar />
-                <main className="pt-16">
-                    {children}
-                </main>
-                <PersistentPlayer />
+                {children}
             </body>
         </html>
     );

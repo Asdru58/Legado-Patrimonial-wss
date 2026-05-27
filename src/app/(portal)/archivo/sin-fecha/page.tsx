@@ -1,67 +1,39 @@
 // =========================================================
-// Legado Patrimonial WSS — Paso 4 Refactorización v2
-// src/app/archivo/[year]/[month]/page.tsx
-// Server Component: Panel 3 — Lista de Conferencias por Mes
+// Legado Patrimonial WSS — Paso 5 Refactorización v2
+// src/app/archivo/sin-fecha/page.tsx
+// Server Component: Conferencias pendientes de clasificación temporal
 // =========================================================
 
-import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getConferenciasPorMes } from '@/lib/services/conferences'
+import { getConferenciasSinFecha } from '@/lib/services/conferences'
 import { ConferenceCard } from '@/components/ui/ConferenceCard'
-import { Pagination } from '@/app/archivo/Pagination'
+import { Pagination } from '@/app/(portal)/archivo/Pagination'
 
-type MesPageProps = {
-  params: Promise<{
-    year: string
-    month: string
-  }>
+type SinFechaPageProps = {
   searchParams: Promise<{
     page?: string
   }>
 }
 
-const MESES_NOMBRES = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-]
-
 const ITEMS_PER_PAGE = 20
 
-export default async function ArchivoMesPage({ params, searchParams }: MesPageProps) {
-  const resolvedParams = await params
+export default async function ArchivoSinFechaPage({ searchParams }: SinFechaPageProps) {
   const resolvedSearchParams = await searchParams
-  const yearNumber = parseInt(resolvedParams.year, 10)
-  const monthNumber = parseInt(resolvedParams.month, 10)
-
-  // Validación 1: Valores numéricos y rango del mes
-  if (
-    Number.isNaN(yearNumber) || 
-    Number.isNaN(monthNumber) || 
-    monthNumber < 1 || 
-    monthNumber > 12
-  ) {
-    notFound()
-  }
-
   // Parseo de página
   const pageParam = typeof resolvedSearchParams.page === 'string' ? resolvedSearchParams.page : '1'
   const currentPage = Math.max(1, parseInt(pageParam, 10) || 1)
 
   // Consulta al servicio
-  const { data: conferencias, total } = await getConferenciasPorMes({
-    year: yearNumber,
-    month: monthNumber,
+  const { data: conferencias, total } = await getConferenciasSinFecha({
     page: currentPage,
     limit: ITEMS_PER_PAGE
   })
 
-  // Validación 2: Si no hay registros desde la base de datos
-  if (total === 0) {
-    notFound()
-  }
-
-  const nombreMes = MESES_NOMBRES[monthNumber - 1]
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE)
+
+  // Decisión de diseño (Corección de prolijidad): 
+  // Usar exclusivamente el bloque visual de estado vacío en lugar de notFound().
+  const isEmpty = total === 0 || conferencias.length === 0
 
   return (
     <div
@@ -88,22 +60,8 @@ export default async function ArchivoMesPage({ params, searchParams }: MesPagePr
                 <path d="m9 18 6-6-6-6" />
               </svg>
             </li>
-            <li>
-              <Link
-                href={`/archivo/${yearNumber}`}
-                className="transition-colors hover:text-white"
-                style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.4))' }}
-              >
-                {yearNumber}
-              </Link>
-            </li>
-            <li aria-hidden="true" style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.2))' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m9 18 6-6-6-6" />
-              </svg>
-            </li>
             <li aria-current="page" style={{ color: 'var(--color-gold, #D4AF37)' }}>
-              {nombreMes}
+              Sin fecha asignada
             </li>
           </ol>
         </nav>
@@ -120,21 +78,21 @@ export default async function ArchivoMesPage({ params, searchParams }: MesPagePr
                 color: 'var(--color-text-primary, rgba(255,255,255,0.95))',
               }}
             >
-              {nombreMes} <span style={{ color: 'var(--color-gold, #D4AF37)' }}>{yearNumber}</span>
+              Sin fecha <span style={{ color: 'var(--color-gold, #D4AF37)' }}>asignada</span>
             </h1>
             <p
               className="mt-3 text-base"
               style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}
             >
-              Mostrando {conferencias.length} de {total} conferencias
+              Conferencias pendientes de clasificación temporal exacta. Mostrando {conferencias.length} de {total} registros.
             </p>
           </div>
         </div>
 
         {/* ============================================
-            GRILLA DE CONFERENCIAS
+            GRILLA O ESTADO VACÍO
             ============================================ */}
-        {conferencias.length > 0 ? (
+        {!isEmpty ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {conferencias.map((conf, idx) => (
@@ -175,7 +133,7 @@ export default async function ArchivoMesPage({ params, searchParams }: MesPagePr
               </svg>
             </div>
             <h2 className="text-xl font-medium mb-2" style={{ color: 'var(--color-text-primary, rgba(255,255,255,0.9))' }}>No se encontraron resultados</h2>
-            <p style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}>No hay conferencias disponibles para esta página.</p>
+            <p style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}>No hay conferencias sin fecha para esta página.</p>
           </div>
         )}
       </div>

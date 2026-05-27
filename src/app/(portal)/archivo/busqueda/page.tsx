@@ -7,7 +7,7 @@
 import Link from 'next/link'
 import { searchArchivoConferencias } from '@/lib/services/conferences'
 import { ConferenceCard } from '@/components/ui/ConferenceCard'
-import { Pagination } from '@/app/archivo/Pagination'
+import { Pagination } from '@/app/(portal)/archivo/Pagination'
 
 type BusquedaPageProps = {
   searchParams: Promise<{
