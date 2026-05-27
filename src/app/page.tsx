@@ -24,21 +24,21 @@ export default function Page() {
         <Link
           href="/"
           aria-label="Ir a la portada de Legado Patrimonial El Séptimo Sello"
-          className="group flex min-h-[44px] items-center gap-3 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DFC06A]"
+          className="group flex min-h-[44px] min-w-0 flex-1 items-center gap-3 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DFC06A]"
         >
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#C8A843] text-sm font-bold text-[#0F0D0A]">
             LP
           </span>
-          <span className="text-sm font-medium text-[#E8DCC8] transition-colors group-hover:text-[#DFC06A] md:text-base">
-            Legado Patrimonial
-            <span className="hidden sm:inline"> El Séptimo Sello</span>
+          <span className="flex min-w-0 flex-col text-sm font-medium leading-tight text-[#E8DCC8] transition-colors group-hover:text-[#DFC06A] md:block md:text-base md:leading-normal">
+            <span className="block truncate md:inline">Legado Patrimonial</span>
+            <span className="block truncate md:ml-1 md:inline">El Séptimo Sello</span>
           </span>
         </Link>
 
         <Link
           href="/inicio"
           aria-label="Entrar al portal"
-          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md px-3 text-sm font-medium text-[rgba(232,220,200,0.7)] transition-colors hover:text-[#DFC06A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DFC06A]"
+          className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-md px-3 text-sm font-medium text-[rgba(232,220,200,0.7)] transition-colors hover:text-[#DFC06A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DFC06A]"
         >
           Inicio
         </Link>
