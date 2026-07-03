@@ -53,16 +53,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!ep) {
     return {
-      title: 'Episodio no encontrado | Legado Patrimonial WSS',
+      title: 'Episodio no encontrado | Legado Patrimonial, el Séptimo Sello',
     }
   }
 
   return {
-    title: `${ep.titulo} | Podcast — Legado Patrimonial WSS`,
+    title: `${ep.titulo} | Podcast — Legado Patrimonial, el Séptimo Sello`,
     description:
       ep.descripcion ??
       ep.tema_doctrinal ??
-      `Escucha "${ep.titulo}" en el podcast de Legado Patrimonial WSS.`,
+      `Escucha "${ep.titulo}" en el podcast de Legado Patrimonial, el Séptimo Sello.`,
   }
 }
 

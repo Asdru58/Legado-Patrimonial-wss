@@ -25,7 +25,7 @@ import {
 import { getAllEpisodios, getEpisodioDestacado } from '@/lib/services/podcast'
 
 export const metadata: Metadata = {
-  title: 'Podcast | Legado Patrimonial WSS',
+  title: 'Podcast | Legado Patrimonial, el Séptimo Sello',
   description:
     'Estudios doctrinales pregrabados en formato conversación guiada, centrados en temas bíblico-proféticos derivados de las conferencias del Dr. William Soto Santiago.',
 }

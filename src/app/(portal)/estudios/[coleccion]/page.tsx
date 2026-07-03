@@ -22,13 +22,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!col) {
     return {
-      title: 'Colección no encontrada | Legado Patrimonial WSS',
+      title: 'Colección no encontrada | Legado Patrimonial, el Séptimo Sello',
     }
   }
 
   return {
-    title: `${col.titulo} | Estudios — Legado Patrimonial WSS`,
-    description: col.descripcion ?? `Explora la colección "${col.titulo}" en Legado Patrimonial WSS.`,
+    title: `${col.titulo} | Estudios — Legado Patrimonial, el Séptimo Sello`,
+    description: col.descripcion ?? `Explora la colección "${col.titulo}" en Legado Patrimonial, el Séptimo Sello.`,
   }
 }
 

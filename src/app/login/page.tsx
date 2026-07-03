@@ -62,7 +62,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               text-white/90 tracking-wide
             "
           >
-            Legado Patrimonial
+            Legado Patrimonial,
           </h1>
 
           <p
@@ -72,7 +72,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               mt-2 tracking-[0.4em]
             "
           >
-            W. S. S.
+            el Séptimo Sello
           </p>
         </header>
 

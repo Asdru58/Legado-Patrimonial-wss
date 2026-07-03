@@ -20,9 +20,9 @@ import {
 import { getAllBlogPosts, getFeaturedBlogPost } from "@/lib/services/blog";
 
 export const metadata: Metadata = {
-  title: "Blog | Legado Patrimonial WSS",
+  title: "Blog | Legado Patrimonial, el Séptimo Sello",
   description:
-    "Sala de lectura y actualizaciones de Legado Patrimonial WSS: artículos editoriales, crónicas del archivo y reflexiones doctrinales en una experiencia sobria, elegante e inmersiva.",
+    "Sala de lectura y actualizaciones de Legado Patrimonial, el Séptimo Sello: artículos editoriales, crónicas del archivo y reflexiones doctrinales en una experiencia sobria, elegante e inmersiva.",
 };
 
 type BlogMetric = {

@@ -78,7 +78,7 @@ export async function generateMetadata({
 
   if (!conferencia) {
     return {
-      title: 'Conferencia no encontrada — Legado Patrimonial WSS',
+      title: 'Conferencia no encontrada — Legado Patrimonial, el Séptimo Sello',
     }
   }
 
@@ -88,7 +88,7 @@ export async function generateMetadata({
     `Conferencia: ${conferencia.titulo}`
 
   return {
-    title: `${conferencia.titulo} — Legado Patrimonial WSS`,
+    title: `${conferencia.titulo} — Legado Patrimonial, el Séptimo Sello`,
     description,
     openGraph: {
       title: conferencia.titulo,

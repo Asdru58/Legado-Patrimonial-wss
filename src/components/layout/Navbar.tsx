@@ -151,13 +151,13 @@ export function Navbar() {
                 <Link
                     href="/"
                     className="flex items-center gap-3 rounded-md transition-transform duration-150 active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DFC06A]"
-                    aria-label="Legado Patrimonial WSS"
+                    aria-label="Legado Patrimonial, el Séptimo Sello"
                 >
                     <LogoMark />
                     <span className="font-sans text-sm font-semibold tracking-wide text-[#E8DCC8]">
-                        <span className="hidden sm:inline">Legado Patrimonial </span>
-                        <span className="sm:hidden">LP </span>
-                        <span className="text-[#DFC06A]">WSS</span>
+                        <span className="hidden sm:inline">Legado Patrimonial, </span>
+                        <span className="sm:hidden">LP, </span>
+                        <span className="text-[#DFC06A]">el Séptimo Sello</span>
                     </span>
                 </Link>
 
@@ -223,11 +223,12 @@ export function Navbar() {
                             <Link
                                 href="/"
                                 className="flex items-center gap-3 rounded-md transition-transform duration-150 active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DFC06A]"
-                                aria-label="Legado Patrimonial WSS"
+                                aria-label="Legado Patrimonial, el Séptimo Sello"
                             >
                                 <LogoMark />
                                 <span className="font-sans text-sm font-semibold tracking-wide text-[#E8DCC8]">
-                                    Legado Patrimonial <span className="text-[#DFC06A]">WSS</span>
+                                    Legado Patrimonial,{' '}
+                                    <span className="text-[#DFC06A]">el Séptimo Sello</span>
                                 </span>
                             </Link>
 

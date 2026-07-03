@@ -16,7 +16,7 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Acceso — Legado Patrimonial WSS',
+  title: 'Acceso — Legado Patrimonial, el Séptimo Sello',
   description: 'Panel de administración del archivo patrimonial.',
 }
 

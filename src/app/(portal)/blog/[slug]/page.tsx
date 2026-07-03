@@ -130,13 +130,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!post) {
     return {
-      title: 'Artículo no encontrado | Legado Patrimonial WSS',
+      title: 'Artículo no encontrado | Legado Patrimonial, el Séptimo Sello',
     }
   }
 
   return {
-    title: `${post.titulo} | Blog — Legado Patrimonial WSS`,
-    description: post.extracto ?? `Lee "${post.titulo}" en el blog de Legado Patrimonial WSS.`,
+    title: `${post.titulo} | Blog — Legado Patrimonial, el Séptimo Sello`,
+    description: post.extracto ?? `Lee "${post.titulo}" en el blog de Legado Patrimonial, el Séptimo Sello.`,
   }
 }
 

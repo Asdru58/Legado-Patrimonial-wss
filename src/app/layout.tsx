@@ -16,10 +16,10 @@ const bodyFont = Outfit({
 
 export const metadata: Metadata = {
     title: {
-        default: "Legado Patrimonial El Séptimo Sello",
-        template: "%s | Legado Patrimonial El Séptimo Sello",
+        default: "Legado Patrimonial, el Séptimo Sello",
+        template: "%s | Legado Patrimonial, el Séptimo Sello",
     },
-    description: "Portal editorial y archivo patrimonial de conferencias, audio, video y documentos de Legado Patrimonial El Séptimo Sello.",
+    description: "Portal editorial y archivo patrimonial de conferencias, audio, video y documentos de Legado Patrimonial, el Séptimo Sello.",
 };
 
 type RootLayoutProps = Readonly<{

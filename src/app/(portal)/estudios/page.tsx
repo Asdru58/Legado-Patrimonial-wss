@@ -25,9 +25,9 @@ import { getAllColecciones, type Coleccion } from "@/lib/services/colecciones";
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: "Estudios | Legado Patrimonial WSS",
+  title: "Estudios | Legado Patrimonial, el Séptimo Sello",
   description:
-    "Colecciones temáticas de estudios y series doctrinales organizadas para exploración clara, sobria y escalable dentro de Legado Patrimonial WSS.",
+    "Colecciones temáticas de estudios y series doctrinales organizadas para exploración clara, sobria y escalable dentro de Legado Patrimonial, el Séptimo Sello.",
 };
 
 type HighlightStat = {
@@ -383,7 +383,7 @@ export default async function EstudiosPage() {
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-white/72">
                 Desde aquí puedes volver al archivo principal o explorar las demás secciones
-                del ecosistema editorial de Legado Patrimonial.
+                del ecosistema editorial de Legado Patrimonial, el Séptimo Sello.
               </p>
             </div>
 

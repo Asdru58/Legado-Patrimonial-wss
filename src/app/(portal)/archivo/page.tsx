@@ -33,8 +33,7 @@ export default async function ArchivoPage() {
         </h1>
 
         <p
-          className="mt-2 text-sm mb-6"
-          style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}
+          className="mt-3 max-w-3xl text-base md:text-lg font-medium leading-relaxed text-[#C7B99F]"
         >
           Explora el archivo completo de conferencias espirituales
           desde 1974 hasta 2018.

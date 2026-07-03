@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "El Legado | Legado Patrimonial WSS",
+  title: "El Legado | Legado Patrimonial, el Séptimo Sello",
   description:
     "Plataforma documental para custodiar, ordenar y transmitir el archivo histórico espiritual de la obra.",
 };
@@ -64,7 +64,7 @@ const timeline = [
     label: "Expansión",
     title: "Portal institucional de alto rendimiento",
     description:
-      "Legado Patrimonial WSS se proyecta como una plataforma robusta, preparada para navegación cronológica, hubs temáticos y continuidad editorial.",
+      "Legado Patrimonial, el Séptimo Sello se proyecta como una plataforma robusta, preparada para navegación cronológica, hubs temáticos y continuidad editorial.",
   },
 ];
 
@@ -87,7 +87,7 @@ export default function ElLegadoPage() {
             </h1>
 
             <p className="mt-6 max-w-3xl text-base leading-8 text-white/72 md:text-lg">
-              Legado Patrimonial WSS existe para preservar con sobriedad y excelencia el
+              Legado Patrimonial, el Séptimo Sello existe para preservar con sobriedad y excelencia el
               patrimonio espiritual, histórico y documental de la obra. No es solo una biblioteca:
               es una infraestructura de memoria diseñada para continuidad, consulta y transmisión
               fiel.

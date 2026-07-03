@@ -21,7 +21,7 @@ export default function HeroSection() {
                         className="font-serif text-5xl font-semibold leading-[1.08] tracking-[-0.04em] text-[#E8DCC8] sm:text-6xl lg:text-7xl"
                     >
                         El resguardo de{" "}
-                        <em className="not-italic text-[#DFC06A]">la Palabra viva</em>
+                        <em className="not-italic text-[#DFC06A]">la Palabra Pura</em>
                     </h1>
 
                     <blockquote className="mt-8 max-w-xl border-l border-[#C8A843] pl-5">
