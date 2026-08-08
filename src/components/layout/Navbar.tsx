@@ -149,7 +149,7 @@ export function Navbar() {
         <nav className="fixed inset-x-0 top-0 z-50 border-b border-[rgba(200,170,100,0.1)] bg-[rgba(15,13,10,0.95)] backdrop-blur-sm motion-reduce:bg-[rgba(15,13,10,0.98)] motion-reduce:backdrop-blur-none md:bg-[rgba(15,13,10,0.88)] md:backdrop-blur-xl">
             <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 md:px-10">
                 <Link
-                    href="/"
+                    href="/inicio"
                     className="flex items-center gap-3 rounded-md transition-transform duration-150 active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DFC06A]"
                     aria-label="Legado Patrimonial, el Séptimo Sello"
                 >
@@ -221,7 +221,7 @@ export function Navbar() {
                     >
                         <div className="mb-8 flex items-center justify-between">
                             <Link
-                                href="/"
+                                href="/inicio"
                                 className="flex items-center gap-3 rounded-md transition-transform duration-150 active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DFC06A]"
                                 aria-label="Legado Patrimonial, el Séptimo Sello"
                             >

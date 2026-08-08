@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArchiveEntry } from "@/components/hero/ArchiveEntry";
 import { DashboardGrid, HeroSection } from "@/components/ui";
 
 const stats = [
@@ -12,6 +13,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0F0D0A]">
       <HeroSection />
+      <ArchiveEntry />
 
       <section
         aria-labelledby="stats-title"

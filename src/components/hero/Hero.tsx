@@ -51,9 +51,7 @@ export function Hero() {
           </span>
           <span className="flex min-w-0 flex-col text-sm font-medium leading-tight text-[#E8DCC8] transition-colors group-hover:text-[#DFC06A] md:block md:text-base md:leading-normal">
             <span className="block truncate md:inline">Legado Patrimonial,</span>
-            <span className="block truncate md:ml-1 md:inline">
-              el Séptimo Sello
-            </span>
+            <span className="block truncate md:ml-1 md:inline">el Séptimo Sello</span>
           </span>
         </Link>
 
@@ -77,14 +75,13 @@ export function Hero() {
             id="hero-title"
             className="max-w-2xl font-serif text-4xl font-bold leading-[1.08] tracking-[-0.03em] text-[#E8DCC8] sm:text-5xl lg:text-6xl"
           >
-            El resguardo de la{' '}
-            <span className="text-[#DFC06A]">Palabra Pura</span>
+            El resguardo de la <span className="text-[#DFC06A]">Palabra Pura</span>
           </h1>
 
           <blockquote className="mt-6 max-w-2xl border-l-2 border-[#C8A843] pl-5">
             <p className="text-sm leading-7 text-[rgba(232,220,200,0.72)] sm:text-base">
-              “El Mensaje de Dios para cada etapa, edad o dispensación, luego
-              que es dado, es un patrimonio del pueblo de Dios.”
+              “El Mensaje de Dios para cada etapa, edad o dispensación, luego que es dado,
+              es un patrimonio del pueblo de Dios.”
             </p>
             <cite className="mt-3 block text-xs not-italic uppercase tracking-[0.08em] text-[rgba(232,220,200,0.5)]">
               Dr. William Soto Santiago

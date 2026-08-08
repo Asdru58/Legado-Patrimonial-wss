@@ -5,10 +5,9 @@
 // con buscador global y enlace a conferencias sin fecha
 // =========================================================
 
-import { Suspense } from 'react'
 import { getConferenciasPorAnio } from '@/lib/services/conferences'
+import { HeroSearch } from '@/components/hero/HeroSearch'
 import { DecadaGrid } from './DecadaGrid'
-import { SearchBar } from './SearchBar'
 
 export default async function ArchivoPage() {
   const { anios, sinFecha } = await getConferenciasPorAnio()
@@ -39,9 +38,9 @@ export default async function ArchivoPage() {
           desde 1974 hasta 2018.
         </p>
 
-        <Suspense fallback={null}>
-          <SearchBar />
-        </Suspense>
+        <div className="mt-6 max-w-2xl">
+          <HeroSearch />
+        </div>
       </div>
 
       {/* ============================================
