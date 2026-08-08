@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" source("../");
 
 /* ============================================
    Design System — Legado Patrimonial WSS
@@ -43,8 +43,8 @@
   --shadow-glow-gold-strong: 0 0 30px rgba(226, 184, 87, 0.4);
 
   /* Font */
-  --font-primary: var(--font-inter), 'Inter', system-ui, sans-serif;
-  --font-serif: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  --font-primary: var(--font-body, 'Outfit'), system-ui, sans-serif;
+  --font-serif: var(--font-display, 'EB Garamond'), Georgia, serif;
 }
 
 @theme inline {
