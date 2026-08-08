@@ -9,9 +9,9 @@ import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { ConferenciaDetalleClient } from './ConferenciaDetalleClient'
-import type { Conferencia } from '@/types/database'
+import type { ConferenciaPublica } from '@/types/database'
 
-// ── Columnas alineadas con el tipo Conferencia (excluye fts) ──
+// ── Columnas editoriales expuestas por la vista pública ──
 const SELECT_COLUMNS = `
   id,
   slug,
@@ -27,11 +27,8 @@ const SELECT_COLUMNS = `
   video_provider,
   video_provider_id,
   video_status,
-  video_checked_at,
   video_fallback_provider,
-  video_fallback_url,
-  created_at,
-  updated_at
+  video_fallback_url
 `
 
 // ── Validación de slug ──
@@ -46,7 +43,7 @@ interface ConferenciaPageProps {
 // desde generateMetadata y desde el componente de página.
 const getConferencia = cache(async function getConferencia(
   slug: string
-): Promise<Conferencia | null> {
+): Promise<ConferenciaPublica | null> {
   if (!SLUG_REGEX.test(slug)) {
     return null
   }
@@ -54,7 +51,7 @@ const getConferencia = cache(async function getConferencia(
   const supabase = await createClient()
 
   const { data, error } = await supabase
-    .from('conferencias')
+    .from('conferencias_publicas')
     .select(SELECT_COLUMNS)
     .eq('slug', slug)
     .single()
@@ -63,7 +60,7 @@ const getConferencia = cache(async function getConferencia(
     return null
   }
 
-  return data as Conferencia
+  return data as ConferenciaPublica
 })
 
 // =========================================================

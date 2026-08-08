@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { Conferencia } from "@/types/database";
+import type { ConferenciaPublica } from "@/types/database";
 
 interface UseConferenciasResult {
-    conferencias: Conferencia[];
+    conferencias: ConferenciaPublica[];
     loading: boolean;
     error: string | null;
 }
@@ -17,7 +17,7 @@ interface UseConferenciasResult {
  * Trae las últimas 20 conferencias ordenadas por fecha.
  */
 export function useConferencias(): UseConferenciasResult {
-    const [conferencias, setConferencias] = useState<Conferencia[]>([]);
+    const [conferencias, setConferencias] = useState<ConferenciaPublica[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -29,7 +29,7 @@ export function useConferencias(): UseConferenciasResult {
                 const supabase = createClient();
 
                 const { data, error: fetchError } = await supabase
-                    .from("conferencias")
+                    .from("conferencias_publicas")
                     .select(`
                         id,
                         slug,
@@ -46,10 +46,7 @@ export function useConferencias(): UseConferenciasResult {
                         video_provider_id,
                         video_status,
                         video_fallback_provider,
-                        video_fallback_url,
-                        video_checked_at,
-                        created_at,
-                        updated_at
+                        video_fallback_url
                     `)
                     .order("fecha_impartida", { ascending: false })
                     .limit(20);
@@ -62,7 +59,7 @@ export function useConferencias(): UseConferenciasResult {
                     return;
                 }
 
-                setConferencias((data ?? []) as Conferencia[]);
+                setConferencias((data ?? []) as ConferenciaPublica[]);
                 setLoading(false);
             } catch (err) {
                 if (!cancelled) {
