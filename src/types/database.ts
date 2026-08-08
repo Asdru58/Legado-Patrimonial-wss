@@ -43,6 +43,26 @@ export type Conferencia = {
   serie_id: string | null             // uuid, FK a series
 }
 
+export type ConferenciaPublica = Pick<
+  Conferencia,
+  | 'id'
+  | 'slug'
+  | 'titulo'
+  | 'extracto'
+  | 'descripcion'
+  | 'fecha_impartida'
+  | 'ponente_nombre'
+  | 'ponente_rol'
+  | 'audio_url'
+  | 'audio_duracion'
+  | 'pdf_url'
+  | 'video_provider'
+  | 'video_provider_id'
+  | 'video_fallback_provider'
+  | 'video_fallback_url'
+  | 'video_status'
+>
+
 export interface TranscripcionFragmento {
   id: string
   conferencia_id: string
@@ -70,15 +90,15 @@ export interface ResultadoBusqueda {
   similitud: number
 }
 
-export function tieneAudio(conf: Conferencia): boolean {
+export function tieneAudio(conf: ConferenciaPublica): boolean {
   return Boolean(conf.audio_url)
 }
 
-export function tieneVideo(conf: Conferencia): boolean {
+export function tieneVideo(conf: ConferenciaPublica): boolean {
   return conf.video_provider !== 'none' && conf.video_status === 'active'
 }
 
-export function tienePdf(conf: Conferencia): boolean {
+export function tienePdf(conf: ConferenciaPublica): boolean {
   return Boolean(conf.pdf_url)
 }
 

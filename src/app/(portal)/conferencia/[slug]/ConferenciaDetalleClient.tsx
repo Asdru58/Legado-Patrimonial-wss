@@ -10,12 +10,12 @@
 
 import { useCallback } from 'react'
 import Link from 'next/link'
-import type { Conferencia } from '@/types/database'
+import type { ConferenciaPublica } from '@/types/database'
 import { tieneAudio, tieneVideo, tienePdf } from '@/types/database'
 import { usePlayerStore } from '@/store/playerStore'
 
 interface ConferenciaDetalleClientProps {
-  conferencia: Conferencia
+  conferencia: ConferenciaPublica
 }
 
 // ── Helpers ──
@@ -54,7 +54,7 @@ function buildYouTubeEmbedSrc(videoProviderId: string): string {
   return `https://www.youtube-nocookie.com/embed/${videoProviderId}?${params.toString()}`
 }
 
-function buildVideoSrc(conferencia: Conferencia): string | null {
+function buildVideoSrc(conferencia: ConferenciaPublica): string | null {
   if (conferencia.video_provider === 'none' || !conferencia.video_provider_id) {
     return null
   }
@@ -69,7 +69,7 @@ function buildVideoSrc(conferencia: Conferencia): string | null {
     : null
 }
 
-function buildFallbackSrc(conferencia: Conferencia): string | null {
+function buildFallbackSrc(conferencia: ConferenciaPublica): string | null {
   if (!conferencia.video_fallback_provider || !conferencia.video_fallback_url) {
     return null
   }

@@ -2,12 +2,12 @@
 
 import Link from 'next/link'
 import { useCallback } from 'react'
-import type { Conferencia } from '@/types/database'
+import type { ConferenciaPublica } from '@/types/database'
 import { tieneAudio, tieneVideo, tienePdf } from '@/types/database'
 import { usePlayerStore } from '@/store/playerStore'
 
 type ConferenceCardProps = {
-  conferencia: Conferencia
+  conferencia: ConferenciaPublica
   index?: number
 }
 
