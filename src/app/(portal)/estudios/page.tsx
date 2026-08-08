@@ -27,7 +27,7 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: "Estudios | Legado Patrimonial, el Séptimo Sello",
   description:
-    "Colecciones temáticas de estudios y series doctrinales organizadas para exploración clara, sobria y escalable dentro de Legado Patrimonial, el Séptimo Sello.",
+    "Enseñanzas del Dr. William Soto Santiago organizadas por temas y series para facilitar el repaso, la consulta y el estudio.",
 };
 
 type HighlightStat = {
@@ -43,19 +43,19 @@ type Guideline = {
 
 const GUIDELINES: Guideline[] = [
   {
-    title: "Exploración temática",
+    title: "Estudio por temas",
     description:
-      "El hub agrupa series completas para facilitar continuidad de estudio y contexto doctrinal.",
+      "Las colecciones reúnen enseñanzas relacionadas para facilitar el repaso y la comprensión de cada tema.",
   },
   {
-    title: "Escalabilidad visual",
+    title: "Recorrido ordenado",
     description:
-      "La estructura admite crecimiento sin romper el layout ni exigir definición inmediata de backend.",
+      "Las series permiten avanzar de forma clara y conservar la continuidad entre los distintos materiales.",
   },
   {
-    title: "Preparado para detalle",
+    title: "Consulta sencilla",
     description:
-      "Cada colección puede conectar luego con `/estudios/[coleccion]` sin rehacer esta portada.",
+      "Cada colección ofrece un punto de entrada directo para encontrar y consultar el material de estudio.",
   },
 ];
 
@@ -79,12 +79,12 @@ function buildStats(colecciones: Coleccion[]): HighlightStat[] {
     {
       label: "Destacadas",
       value: String(destacadas).padStart(2, "0"),
-      detail: "Colecciones marcadas con prioridad editorial",
+      detail: "Selección inicial para orientar el estudio",
     },
     {
       label: "Cobertura",
       value: categoriasLabel,
-      detail: "Organización pensada para expansión futura",
+      detail: "Temas doctrinales, proféticos y bíblicos",
     },
   ];
 }
@@ -97,38 +97,42 @@ export default async function EstudiosPage() {
   const stats = buildStats(colecciones);
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-[#0F0D0A] text-[#E8DCC8]">
       <section
         aria-labelledby="estudios-hero-title"
-        className="relative overflow-hidden border-b border-[#D4AF37]/15"
+        className="relative overflow-hidden border-b border-[rgba(200,168,67,0.18)]"
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.18),transparent_34%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(200,168,67,0.18),transparent_34%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0))]" />
 
         <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-16 md:px-8 md:py-24 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/20 bg-white/5 px-4 py-2 text-xs font-medium uppercase tracking-[0.22em] text-[#E7C96C] backdrop-blur-xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(200,168,67,0.18)] bg-[rgba(200,168,67,0.05)] px-4 py-2 text-xs font-medium uppercase tracking-[0.22em] text-[#DFC06A] backdrop-blur-xl">
               <Sparkles className="h-4 w-4" />
               Estudios Temáticos
             </div>
 
             <h1
               id="estudios-hero-title"
-              className="mt-6 max-w-4xl text-4xl font-semibold tracking-tight text-white md:text-5xl lg:text-6xl"
+              className="mt-6 max-w-4xl font-serif text-3xl font-bold leading-tight tracking-tight text-[#E8DCC8] md:text-5xl"
             >
-              Un hub doctrinal para recorrer colecciones, series y líneas de estudio con orden.
+              Estudia el Mensaje por temas y series.
             </h1>
 
-            <p className="mt-6 max-w-3xl text-base leading-8 text-white/72 md:text-lg">
-              Esta sección reúne colecciones temáticas para consulta estructurada. El objetivo es
-              ofrecer una navegación clara entre series doctrinales y proféticas sin bloquear el
-              desarrollo visual por la definición final de la base de datos.
+            <p className="mt-4 max-w-3xl text-base leading-relaxed text-[#C7B99F] md:text-lg">
+              Explora enseñanzas del Dr. William Soto Santiago organizadas en colecciones
+              doctrinales, proféticas y bíblicas, preparadas para facilitar el repaso, la consulta
+              y el estudio de la Palabra Pura.
+            </p>
+
+            <p className="mt-4 max-w-3xl rounded-xl border border-[rgba(200,168,67,0.18)] bg-[rgba(200,168,67,0.05)] px-4 py-3 text-sm leading-relaxed text-[rgba(232,220,200,0.72)] md:text-base">
+              La finalidad es ayudarte a encontrar material de estudio de manera clara.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="#destacadas"
-                className="inline-flex items-center gap-2 rounded-2xl bg-[#D4AF37] px-6 py-4 text-sm font-semibold text-[#111111] shadow-[0_12px_40px_rgba(212,175,55,0.24)] transition hover:bg-[#e3bf4f]"
+                className="inline-flex items-center gap-2 rounded-2xl bg-[#C8A843] px-6 py-4 text-sm font-semibold text-[#0F0D0A] shadow-[0_12px_40px_rgba(200,168,67,0.24)] transition hover:bg-[#DFC06A]"
               >
                 Explorar colecciones
                 <ArrowDown className="h-4 w-4" />
@@ -178,7 +182,7 @@ export default async function EstudiosPage() {
               id="estudios-featured-title"
               className="text-2xl font-semibold tracking-tight text-white"
             >
-              Colecciones destacadas
+              Temas recomendados para comenzar
             </h2>
           </div>
 
@@ -296,7 +300,7 @@ export default async function EstudiosPage() {
               Sin colecciones publicadas
             </p>
             <p className="text-sm text-white/50">
-              Las colecciones aparecerán aquí cuando se publiquen desde el panel de administración.
+              Cuando haya colecciones disponibles, podrás consultarlas aquí por tema y serie.
             </p>
           </div>
         </section>
@@ -314,23 +318,23 @@ export default async function EstudiosPage() {
               id="estudios-guidelines-title"
               className="text-2xl font-semibold tracking-tight text-white"
             >
-              Criterio del hub
+              Propósito de esta sección
             </h2>
           </div>
 
           <p className="mt-6 text-[15px] leading-8 text-white/72">
-            La portada de Estudios prioriza claridad editorial y agrupación temática. Este nivel
-            debe servir como entrada estable mientras se define el modelo real de colecciones,
-            materiales relacionados y paginación.
+            La página de Estudios organiza las enseñanzas por temas y series para que puedas
+            ubicar materiales relacionados, repasar su contenido y continuar tu estudio con
+            claridad.
           </p>
 
           <div className="mt-8 rounded-[1.5rem] border border-[#D4AF37]/15 bg-[#D4AF37]/7 p-5">
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-[#E7C96C]">
-              Datos en vivo
+              Consulta por colecciones
             </p>
             <p className="mt-3 text-sm leading-7 text-white/68">
-              Las colecciones se cargan dinámicamente desde Supabase. La gestión
-              editorial se realiza desde el panel de administración.
+              Cada colección reúne materiales vinculados para ayudarte a profundizar en una
+              enseñanza de forma ordenada.
             </p>
           </div>
         </article>
@@ -341,7 +345,7 @@ export default async function EstudiosPage() {
               <Library className="h-5 w-5 text-[#D4AF37]" />
             </div>
             <h2 className="text-2xl font-semibold tracking-tight text-white">
-              Principios de construcción
+              Cómo aprovechar esta sección
             </h2>
           </div>
 
@@ -379,11 +383,11 @@ export default async function EstudiosPage() {
                 id="estudios-cta-title"
                 className="mt-3 text-2xl font-semibold tracking-tight text-white md:text-3xl"
               >
-                Continúa tu recorrido doctrinal por el archivo y las demás secciones editoriales.
+                Continúa tu estudio en el archivo y las demás secciones de Legado Patrimonial.
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-white/72">
-                Desde aquí puedes volver al archivo principal o explorar las demás secciones
-                del ecosistema editorial de Legado Patrimonial, el Séptimo Sello.
+                Desde aquí puedes volver al archivo principal o consultar otros contenidos de
+                Legado Patrimonial, el Séptimo Sello.
               </p>
             </div>
 
