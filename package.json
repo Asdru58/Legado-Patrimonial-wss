@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "test:search": "node --env-file=.env.local scripts/test-buscar-conferencias.mjs",
     "start": "next start",
     "lint": "eslint"
   },

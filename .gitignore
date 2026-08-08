@@ -29,6 +29,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+ingesta_lote_piloto2.log
+ingesta_resumen_lote.log
+excepciones_match_pendientes.log
+excepciones_ocr_pendientes.log
+excepciones_error_lote.log
 
 # env files (can opt-in for committing if needed)
 .env*
@@ -59,8 +64,10 @@ next-env.d.ts
 *.pdf
 *.docx
 *.sql
+!supabase/migrations/*.sql
 *.html
 *.txt
+!requirements.txt
 
 # Proxy experimental / migracion futura Next.js 16
 src/proxy.ts
@@ -70,3 +77,6 @@ src/proxy.ts
 
 # Carpetas locales de ejecucion / respaldos
 /Ejecucion Completada*/
+
+# Reportes locales de auditoria del catalogo
+/scripts/auditoria_catalogo/reportes/
