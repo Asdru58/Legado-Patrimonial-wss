@@ -11,7 +11,8 @@
 import 'server-only'
 
 import { createClient } from '@/lib/supabase/server'
-import type { Conferencia } from '@/types/database'
+import { encodeBgeQuery } from '@/lib/services/bgeEncoder'
+import type { ConferenciaPublica } from '@/types/database'
 
 // ============================================
 // Tipos públicos
@@ -19,9 +20,12 @@ import type { Conferencia } from '@/types/database'
 
 export type ArchivoSortOrder = 'reciente' | 'antiguo' | 'titulo'
 
+export type SearchMode = 'exact' | 'semantic' | 'lexical'
+
 export type ArchivoSearchParams = {
   /** Término de búsqueda FTS (opcional) */
   query: string | null
+  searchMode?: SearchMode
   /** Página actual (1-indexed) */
   page: number
   /** Registros por página */
@@ -34,8 +38,22 @@ export type ArchivoSearchParams = {
   year: string | null
 }
 
+export type SemanticSearchContext = {
+  documentoId: string
+  pasajeId: string
+  orden: number
+  paginaInicio: number
+  paginaFin: number
+  texto: string
+  similitud: number
+}
+
+export type ArchivoSearchConference = ConferenciaPublica & {
+  semanticContext?: SemanticSearchContext
+}
+
 export type ArchivoSearchResult = {
-  data: Conferencia[]
+  data: ArchivoSearchConference[]
   total: number
 }
 
@@ -48,7 +66,7 @@ const DEFAULT_LIMIT = 20
 const MAX_LIMIT = 100
 const MAX_QUERY_LENGTH = 200
 
-// ── Columnas alineadas con el tipo Conferencia (excluye fts) ──
+// ── Columnas de la vista pública (sin campos operativos ni FTS) ──
 const SELECT_COLUMNS = `
   id,
   slug,
@@ -64,11 +82,8 @@ const SELECT_COLUMNS = `
   video_provider,
   video_provider_id,
   video_status,
-  video_checked_at,
   video_fallback_provider,
-  video_fallback_url,
-  created_at,
-  updated_at
+  video_fallback_url
 `
 
 // ============================================
@@ -110,6 +125,18 @@ function sanitizeQuery(raw: string | null): string | null {
     .trim()
 
   return cleaned || null
+}
+
+/**
+ * Prepara una frase Exacta sin aplicar la limpieza propia de FTS.
+ * Conserva puntuacion y espacios interiores para que la RPC reproduzca
+ * la semantica literal validada del piloto.
+ */
+function sanitizeExactQuery(raw: string | null): string | null {
+  if (!raw) return null
+
+  const trimmed = raw.trim().slice(0, MAX_QUERY_LENGTH)
+  return trimmed || null
 }
 
 function normalizeFormat(format: string | null): ArchivoFormato | null {
@@ -158,18 +185,242 @@ function parsePeriodo(periodo: string | null): PeriodRange | null {
   return null
 }
 
-/**
- * Construye la cláusula PostgREST para filtrar por formato.
- */
-function buildFormatFilter(format: ArchivoFormato): string {
-  switch (format) {
-    case 'audio':
-      return 'audio_url.not.is.null'
-    case 'video':
-      return 'and(video_provider.neq.none,video_status.eq.active)'
-    case 'pdf':
-      return 'pdf_url.not.is.null'
+// ============================================
+// Búsqueda Exacta sobre el corpus piloto
+// ============================================
+
+// ============================================
+// Busqueda Semantica sobre el corpus piloto
+// ============================================
+
+type CorpusSemanticSearchRow = {
+  conferencia_id: string
+  documento_id: string
+  titulo: string
+  fecha: string | null
+  slug: string
+  pasaje_id: string
+  orden: number
+  pagina_inicio: number
+  pagina_fin: number
+  texto: string
+  similitud: number
+  total_count: number | string
+}
+
+async function searchSemanticCorpus(
+  params: {
+    query: string
+    page: number
+    limit: number
   }
+): Promise<ArchivoSearchResult> {
+  const encoded = await encodeBgeQuery(params.query)
+  const supabase = await createClient()
+
+  const { data: rawRows, error } = await supabase.rpc(
+    'buscar_corpus_semantica',
+    {
+      consulta_vector: encoded.vector,
+      resultado_limit: params.limit,
+      resultado_offset: (params.page - 1) * params.limit,
+    }
+  )
+
+  if (error) {
+    console.error('[searchSemanticCorpus] RPC error:', error)
+    throw new Error('Error al ejecutar la busqueda semantica.')
+  }
+
+  const rows = (rawRows ?? []) as CorpusSemanticSearchRow[]
+
+  if (rows.length === 0) {
+    return { data: [], total: 0 }
+  }
+
+  const total = Number(rows[0].total_count)
+  const hasInconsistentTotal = rows.some(
+    (row) => Number(row.total_count) !== total
+  )
+
+  if (!Number.isSafeInteger(total) || total < 0 || hasInconsistentTotal) {
+    console.error(
+      '[searchSemanticCorpus] inconsistent total_count:',
+      rows.map((row) => row.total_count)
+    )
+    throw new Error('La busqueda semantica devolvio un total invalido.')
+  }
+
+  const conferenceIds = rows.map((row) => row.conferencia_id)
+  if (new Set(conferenceIds).size !== rows.length) {
+    console.error('[searchSemanticCorpus] duplicate conference rows')
+    throw new Error('La busqueda semantica devolvio un ranking invalido.')
+  }
+
+  const { data: conferenceRows, error: conferenceError } = await supabase
+    .from('conferencias_publicas')
+    .select(SELECT_COLUMNS)
+    .in('id', conferenceIds)
+
+  if (conferenceError) {
+    console.error(
+      '[searchSemanticCorpus] conference metadata error:',
+      conferenceError
+    )
+    throw new Error('Error al completar los resultados semanticos.')
+  }
+
+  const conferenceById = new Map(
+    ((conferenceRows ?? []) as ConferenciaPublica[]).map((conference) => [
+      conference.id,
+      conference,
+    ] as const)
+  )
+
+  const data = rows.map((row): ArchivoSearchConference => {
+    const conference = conferenceById.get(row.conferencia_id)
+
+    if (!conference) {
+      console.error(
+        '[searchSemanticCorpus] missing conference metadata:',
+        row.conferencia_id
+      )
+      throw new Error('Faltan metadatos de un resultado semantico.')
+    }
+
+    return {
+      ...conference,
+      id: row.conferencia_id,
+      slug: row.slug,
+      titulo: row.titulo,
+      fecha_impartida: row.fecha,
+      extracto: row.texto,
+      semanticContext: {
+        documentoId: row.documento_id,
+        pasajeId: row.pasaje_id,
+        orden: row.orden,
+        paginaInicio: row.pagina_inicio,
+        paginaFin: row.pagina_fin,
+        texto: row.texto,
+        similitud: row.similitud,
+      },
+    }
+  })
+
+  return { data, total }
+}
+
+/**
+ * Tipo de retorno de la RPC buscar_corpus_exacta.
+ */
+type CorpusExactSearchRow = {
+  conferencia_id: string
+  documento_id: string
+  titulo: string
+  fecha: string | null
+  slug: string
+  pasaje_id: string
+  orden: number
+  pagina_inicio: number
+  pagina_fin: number
+  texto: string
+  numero_ocurrencias: number
+  total_count: number | string
+}
+
+/**
+ * Ejecuta la RPC Exacta, valida su total y agrupa las filas por conferencia.
+ * La primera fila de cada conferencia es su mejor pasaje por contrato SQL.
+ */
+async function searchExactCorpus(
+  params: {
+    query: string
+    page: number
+    limit: number
+  }
+): Promise<ArchivoSearchResult> {
+  const supabase = await createClient()
+
+  const { data: rawRows, error } = await supabase.rpc('buscar_corpus_exacta', {
+    consulta: params.query,
+    resultado_limit: params.limit,
+    resultado_offset: (params.page - 1) * params.limit,
+  })
+
+  if (error) {
+    console.error('[searchExactCorpus] RPC error:', error)
+    throw new Error('Error al buscar en el archivo de conferencias.')
+  }
+
+  const rows = (rawRows ?? []) as CorpusExactSearchRow[]
+
+  if (rows.length === 0) {
+    return { data: [], total: 0 }
+  }
+
+  const total = Number(rows[0].total_count)
+  const hasInconsistentTotal = rows.some(
+    (row) => Number(row.total_count) !== total
+  )
+
+  if (!Number.isSafeInteger(total) || total < 0 || hasInconsistentTotal) {
+    console.error(
+      '[searchExactCorpus] inconsistent total_count:',
+      rows.map((row) => row.total_count)
+    )
+    throw new Error('Error al buscar en el archivo de conferencias.')
+  }
+
+  const bestRowByConference = new Map<string, CorpusExactSearchRow>()
+
+  for (const row of rows) {
+    if (!bestRowByConference.has(row.conferencia_id)) {
+      bestRowByConference.set(row.conferencia_id, row)
+    }
+  }
+
+  const bestRows = [...bestRowByConference.values()]
+  const conferenceIds = bestRows.map((row) => row.conferencia_id)
+
+  const { data: conferenceRows, error: conferenceError } = await supabase
+    .from('conferencias_publicas')
+    .select(SELECT_COLUMNS)
+    .in('id', conferenceIds)
+
+  if (conferenceError) {
+    console.error('[searchExactCorpus] conference metadata error:', conferenceError)
+    throw new Error('Error al buscar en el archivo de conferencias.')
+  }
+
+  const conferenceById = new Map(
+    ((conferenceRows ?? []) as ConferenciaPublica[]).map((conference) => [
+      conference.id,
+      conference,
+    ] as const)
+  )
+
+  const data = bestRows.map((row): ConferenciaPublica => {
+    const conference = conferenceById.get(row.conferencia_id)
+
+    if (!conference) {
+      console.error(
+        '[searchExactCorpus] missing conference metadata:',
+        row.conferencia_id
+      )
+      throw new Error('Error al buscar en el archivo de conferencias.')
+    }
+
+    return {
+      ...conference,
+      id: row.conferencia_id,
+      slug: row.slug,
+      titulo: row.titulo,
+      fecha_impartida: row.fecha,
+      extracto: row.texto,
+    }
+  })
+
+  return { data, total }
 }
 
 // ============================================
@@ -181,7 +432,7 @@ function buildFormatFilter(format: ArchivoFormato): string {
  * Extiende Conferencia con rank y total_count
  * calculados por PostgreSQL.
  */
-type ConferenciaConRank = Conferencia & {
+type ConferenciaConRank = ConferenciaPublica & {
   rank: number
   total_count: number
 }
@@ -229,9 +480,12 @@ async function searchWithRanking(
   const total = Number(rows[0]?.total_count ?? 0)
 
   // Eliminar rank y total_count antes de devolver al frontend
-  const data: Conferencia[] = rows.map(
-    ({ rank, total_count, ...conf }) => conf
-  )
+  const data: ConferenciaPublica[] = rows.map((row) => {
+    const { rank, total_count: totalCount, ...conferencia } = row
+    void rank
+    void totalCount
+    return conferencia
+  })
 
   return { data, total }
 }
@@ -241,24 +495,45 @@ async function searchWithRanking(
 // ============================================
 
 /**
- * Punto de entrada exclusivo para la ruta de búsqueda FTS.
- *
- * Ejecuta búsqueda FTS vía RPC con ranking real
- * por ts_rank(). Filtros y paginación se resuelven en
- * PostgreSQL. El total es exacto vía count(*) over().
+ * Punto de entrada exclusivo para la ruta de busqueda.
+ * Cada modalidad termina en su motor propio y nunca aplica fallback.
  */
 export async function searchArchivoConferencias(
   params: Readonly<ArchivoSearchParams>
 ): Promise<ArchivoSearchResult> {
   const page = normalizePage(params.page)
   const limit = normalizeLimit(params.limit)
-  const searchQuery = sanitizeQuery(params.query)
-  const format = normalizeFormat(params.format)
-  const periodRange = parsePeriodo(params.year)
+
+  if (params.searchMode === 'semantic') {
+    if (params.query === null) {
+      return { data: [], total: 0 }
+    }
+
+    return searchSemanticCorpus({
+      query: params.query,
+      page,
+      limit,
+    })
+  }
+
+  const searchQuery = params.searchMode === 'exact'
+    ? sanitizeExactQuery(params.query)
+    : sanitizeQuery(params.query)
 
   if (!searchQuery) {
     return { data: [], total: 0 }
   }
+
+  if (params.searchMode === 'exact') {
+    return searchExactCorpus({
+      query: searchQuery,
+      page,
+      limit,
+    })
+  }
+
+  const format = normalizeFormat(params.format)
+  const periodRange = parsePeriodo(params.year)
 
   return searchWithRanking({
     query: searchQuery,
@@ -278,13 +553,23 @@ export async function searchArchivoConferencias(
 const MIN_YEAR = 1974
 const MAX_YEAR = 2018
 
+/** Fila devuelta por la RPC `conferencias_por_anio`. */
+type ConteoAnioRpc = {
+  anio: number
+  total: number | string
+}
+
 /**
  * Panel 1 — Conteo de conferencias por año.
  *
- * Consulta agregada liviana: selecciona solo la columna
- * `fecha_impartida` y agrega por año en el servidor Node.
- * PostgREST no soporta GROUP BY nativo, por lo que la
- * agrupación se resuelve aquí (~300 filas, 1 columna).
+ * La agregación se resuelve por completo en PostgreSQL mediante la RPC
+ * `conferencias_por_anio`, que devuelve una fila por año (~45).
+ *
+ * Antes se descargaba la columna `fecha_impartida` de todo el catálogo y se
+ * agrupaba en Node. Esa consulta pedía 10.000 filas y PostgREST devolvía solo
+ * 1.000 (tope `db-max-rows`), sin que el código lo detectara: el total mostrado
+ * era el número de filas recibidas, no el real. Contar en SQL elimina la
+ * dependencia del transporte y del volumen del catálogo.
  *
  * También devuelve el conteo de registros sin fecha
  * para el enlace "Sin fecha (N)" en la vista de archivo.
@@ -295,12 +580,10 @@ export async function getConferenciasPorAnio(): Promise<{
 }> {
   const supabase = await createClient()
 
-  // Consulta 1: todas las fechas (una sola columna, liviano)
-  const { data: rows, error: errorFechas } = await supabase
-    .from('conferencias')
-    .select('fecha_impartida')
-    .not('fecha_impartida', 'is', null)
-    .range(0, 9999)
+  // Consulta 1: conteo por año agregado en PostgreSQL (una fila por año)
+  const { data: rows, error: errorFechas } = await supabase.rpc(
+    'conferencias_por_anio',
+  )
 
   if (errorFechas) {
     console.error('[getConferenciasPorAnio] error fechas:', errorFechas)
@@ -309,7 +592,7 @@ export async function getConferenciasPorAnio(): Promise<{
 
   // Consulta 2: conteo de registros sin fecha (head: true = solo count)
   const { count: sinFecha, error: errorNull } = await supabase
-    .from('conferencias')
+    .from('conferencias_publicas')
     .select('id', { count: 'exact', head: true })
     .is('fecha_impartida', null)
 
@@ -318,15 +601,9 @@ export async function getConferenciasPorAnio(): Promise<{
     throw new Error('Error al obtener el conteo de registros sin fecha.')
   }
 
-  // Agregar por año en servidor (timezone-safe: parseo directo del string ISO)
-  const conteoPorAnio = new Map<number, number>()
-  for (const row of rows ?? []) {
-    const anio = Number((row.fecha_impartida as string).substring(0, 4))
-    conteoPorAnio.set(anio, (conteoPorAnio.get(anio) ?? 0) + 1)
-  }
-
-  const anios = Array.from(conteoPorAnio.entries())
-    .map(([anio, total]) => ({ anio, total }))
+  // `total` llega como bigint, que PostgREST serializa como cadena.
+  const anios = ((rows ?? []) as ConteoAnioRpc[])
+    .map((row) => ({ anio: Number(row.anio), total: Number(row.total) }))
     .sort((a, b) => a.anio - b.anio)
 
   return { anios, sinFecha: sinFecha ?? 0 }
@@ -356,7 +633,7 @@ export async function getMesesConConferencias(year: number): Promise<{
   const fechaHasta = `${year + 1}-01-01`
 
   const { data: rows, error } = await supabase
-    .from('conferencias')
+    .from('conferencias_publicas')
     .select('fecha_impartida')
     .gte('fecha_impartida', fechaDesde)
     .lt('fecha_impartida', fechaHasta)
@@ -399,7 +676,7 @@ export async function getConferenciasPorMes(params: {
   month: number
   page: number
   limit: number
-}): Promise<{ data: Conferencia[]; total: number }> {
+}): Promise<{ data: ConferenciaPublica[]; total: number }> {
   const { year, month } = params
 
   if (
@@ -427,12 +704,12 @@ export async function getConferenciasPorMes(params: {
   const supabase = await createClient()
 
   const { data, error, count } = await supabase
-    .from('conferencias')
+    .from('conferencias_publicas')
     .select(SELECT_COLUMNS, { count: 'exact' })
     .gte('fecha_impartida', fechaDesde)
     .lt('fecha_impartida', fechaHasta)
     .order('fecha_impartida', { ascending: true })
-    .order('created_at', { ascending: true })
+    .order('titulo', { ascending: true })
     .range(rangeFrom, rangeTo)
 
   if (error) {
@@ -441,7 +718,7 @@ export async function getConferenciasPorMes(params: {
   }
 
   return {
-    data: (data ?? []) as Conferencia[],
+    data: (data ?? []) as ConferenciaPublica[],
     total: count ?? 0,
   }
 }
@@ -455,7 +732,7 @@ export async function getConferenciasPorMes(params: {
 export async function getConferenciasSinFecha(params: {
   page: number
   limit: number
-}): Promise<{ data: Conferencia[]; total: number }> {
+}): Promise<{ data: ConferenciaPublica[]; total: number }> {
   const page = normalizePage(params.page)
   const limit = normalizeLimit(params.limit)
 
@@ -465,7 +742,7 @@ export async function getConferenciasSinFecha(params: {
   const supabase = await createClient()
 
   const { data, error, count } = await supabase
-    .from('conferencias')
+    .from('conferencias_publicas')
     .select(SELECT_COLUMNS, { count: 'exact' })
     .is('fecha_impartida', null)
     .order('titulo', { ascending: true })
@@ -477,7 +754,7 @@ export async function getConferenciasSinFecha(params: {
   }
 
   return {
-    data: (data ?? []) as Conferencia[],
+    data: (data ?? []) as ConferenciaPublica[],
     total: count ?? 0,
   }
 }

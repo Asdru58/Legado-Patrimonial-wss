@@ -5,14 +5,16 @@
 // =========================================================
 
 import Link from 'next/link'
-import { searchArchivoConferencias } from '@/lib/services/conferences'
+import { searchArchivoConferencias, type SearchMode } from '@/lib/services/conferences'
 import { ConferenceCard } from '@/components/ui/ConferenceCard'
+import { HeroSearch } from '@/components/hero/HeroSearch'
 import { Pagination } from '@/app/(portal)/archivo/Pagination'
 
 type BusquedaPageProps = {
   searchParams: Promise<{
     query?: string
     page?: string
+    search_mode?: string | string[]
   }>
 }
 
@@ -22,19 +24,43 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
   const resolvedSearchParams = await searchParams
   // Extracción de parámetros
   const queryParam = typeof resolvedSearchParams.query === 'string' ? resolvedSearchParams.query.trim() : ''
+  const searchModeParam = resolvedSearchParams.search_mode
+  const searchMode: SearchMode =
+    searchModeParam === 'exact' ||
+    searchModeParam === 'semantic' ||
+    searchModeParam === 'lexical'
+      ? searchModeParam
+      : 'lexical'
   const hasQuery = queryParam.length > 0
   const pageParam = typeof resolvedSearchParams.page === 'string' ? resolvedSearchParams.page : '1'
   const currentPage = Math.max(1, parseInt(pageParam, 10) || 1)
 
-  // Consulta al servicio FTS
-  const { data: conferencias, total } = await searchArchivoConferencias({
-    query: hasQuery ? queryParam : null,
-    page: currentPage,
-    limit: ITEMS_PER_PAGE,
-    sort: 'reciente',
-    format: null,
-    year: null,
-  })
+  let semanticSearchFailed = false
+  let searchResult: Awaited<ReturnType<typeof searchArchivoConferencias>> = {
+    data: [],
+    total: 0,
+  }
+
+  try {
+    searchResult = await searchArchivoConferencias({
+      query: hasQuery ? queryParam : null,
+      searchMode,
+      page: currentPage,
+      limit: ITEMS_PER_PAGE,
+      sort: 'reciente',
+      format: null,
+      year: null,
+    })
+  } catch (error) {
+    if (searchMode !== 'semantic') {
+      throw error
+    }
+
+    semanticSearchFailed = true
+    console.error('[ArchivoBusquedaPage] semantic search failed:', error)
+  }
+
+  const { data: conferencias, total } = searchResult
 
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE)
 
@@ -43,7 +69,8 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
   // 2) Búsqueda con término pero sin resultados
   // 3) Búsqueda con resultados
   const isIdle = !hasQuery
-  const isEmpty = hasQuery && (total === 0 || conferencias.length === 0)
+  const isEmpty = hasQuery && !semanticSearchFailed &&
+    (total === 0 || conferencias.length === 0)
 
   return (
     <div
@@ -103,18 +130,62 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
             className="mt-3 text-base"
             style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}
           >
-            {isIdle
+            {semanticSearchFailed
+              ? 'No fue posible completar la búsqueda semántica. No se ejecutó otra modalidad.'
+              : isIdle
               ? 'Ingresa un término, título o palabra clave para explorar las conferencias.'
               : isEmpty
                 ? 'Ninguna coincidencia encontrada.'
                 : `Mostrando ${conferencias.length} de ${total} coincidencias con ranking de relevancia.`}
           </p>
+
+          {searchMode === 'semantic' && (
+            <div
+              role="note"
+              className="mt-5 rounded-xl border px-4 py-3 text-sm"
+              style={{
+                borderColor: 'rgba(212, 175, 55, 0.28)',
+                background: 'rgba(212, 175, 55, 0.08)',
+                color: 'var(--color-text-secondary, rgba(255,255,255,0.75))',
+              }}
+            >
+              Búsqueda de texto completo disponible actualmente en 40 de 5.866
+              conferencias (fase piloto).
+            </div>
+          )}
+
+          <div className="mt-6 max-w-2xl">
+            <HeroSearch
+              key={`${queryParam}:${searchMode}`}
+              initialQuery={queryParam}
+              initialSearchMode={searchMode}
+            />
+          </div>
         </div>
 
         {/* ============================================
             RESULTADOS O ESTADOS VISUALES
             ============================================ */}
-        {isIdle ? (
+        {semanticSearchFailed ? (
+          <div
+            role="alert"
+            className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border"
+            style={{
+              background: 'rgba(255, 255, 255, 0.02)',
+              borderColor: 'rgba(212, 175, 55, 0.22)'
+            }}
+          >
+            <h2
+              className="text-xl font-medium mb-2"
+              style={{ color: 'var(--color-text-primary, rgba(255,255,255,0.9))' }}
+            >
+              Búsqueda semántica no disponible
+            </h2>
+            <p style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}>
+              El servicio semántico no respondió. Intenta nuevamente cuando esté disponible.
+            </p>
+          </div>
+        ) : isIdle ? (
           <div
             className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border"
             style={{
@@ -148,7 +219,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
               Listo para buscar
             </h2>
             <p style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}>
-              Utiliza la barra superior para comenzar tu exploración.
+              Utiliza el buscador para comenzar tu exploración.
             </p>
           </div>
         ) : !isEmpty ? (
