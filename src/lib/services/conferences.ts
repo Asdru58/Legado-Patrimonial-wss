@@ -48,8 +48,19 @@ export type SemanticSearchContext = {
   similitud: number
 }
 
+export type LexicalSearchContext = {
+  documentoId: string
+  pasajeId: string
+  orden: number
+  paginaInicio: number
+  paginaFin: number
+  texto: string
+  relevancia: number
+}
+
 export type ArchivoSearchConference = ConferenciaPublica & {
   semanticContext?: SemanticSearchContext
+  lexicalContext?: LexicalSearchContext
 }
 
 export type ArchivoSearchResult = {
@@ -137,6 +148,17 @@ function sanitizeExactQuery(raw: string | null): string | null {
 
   const trimmed = raw.trim().slice(0, MAX_QUERY_LENGTH)
   return trimmed || null
+}
+
+/**
+ * Canonicaliza la entrada Léxica sin truncarla ni interpretar sintaxis FTS.
+ * La RPC aplica el límite defensivo y construye el plainto_tsquery.
+ */
+function sanitizeLexicalQuery(raw: string | null): string | null {
+  if (!raw) return null
+
+  const canonical = raw.trim().replace(/\s+/g, ' ')
+  return canonical || null
 }
 
 function normalizeFormat(format: string | null): ArchivoFormato | null {
@@ -303,6 +325,120 @@ async function searchSemanticCorpus(
         paginaFin: row.pagina_fin,
         texto: row.texto,
         similitud: row.similitud,
+      },
+    }
+  })
+
+  return { data, total }
+}
+
+// ============================================
+// Búsqueda Léxica sobre el corpus piloto
+// ============================================
+
+type CorpusLexicalSearchRow = {
+  conferencia_id: string
+  documento_id: string
+  pasaje_id: string
+  orden: number
+  pagina_inicio: number
+  pagina_fin: number
+  texto: string
+  relevancia: number
+  total_count: number | string
+}
+
+async function searchLexicalCorpus(
+  params: {
+    query: string
+    page: number
+    limit: number
+  }
+): Promise<ArchivoSearchResult> {
+  const supabase = await createClient()
+
+  const { data: rawRows, error } = await supabase.rpc(
+    'buscar_corpus_lexica',
+    {
+      consulta: params.query,
+      limite: params.limit,
+      desplazamiento: (params.page - 1) * params.limit,
+    }
+  )
+
+  if (error) {
+    console.error('[searchLexicalCorpus] RPC error:', error)
+    throw new Error('Búsqueda por palabras clave no disponible.')
+  }
+
+  const rows = (rawRows ?? []) as CorpusLexicalSearchRow[]
+
+  if (rows.length === 0) {
+    return { data: [], total: 0 }
+  }
+
+  const total = Number(rows[0].total_count)
+  const hasInconsistentTotal = rows.some(
+    (row) => Number(row.total_count) !== total
+  )
+
+  if (!Number.isSafeInteger(total) || total < 0 || hasInconsistentTotal) {
+    console.error(
+      '[searchLexicalCorpus] inconsistent total_count:',
+      rows.map((row) => row.total_count)
+    )
+    throw new Error('Búsqueda por palabras clave no disponible.')
+  }
+
+  const conferenceIds = rows.map((row) => row.conferencia_id)
+  if (new Set(conferenceIds).size !== rows.length) {
+    console.error('[searchLexicalCorpus] duplicate conference rows')
+    throw new Error('Búsqueda por palabras clave no disponible.')
+  }
+
+  const { data: conferenceRows, error: conferenceError } = await supabase
+    .from('conferencias_publicas')
+    .select(SELECT_COLUMNS)
+    .in('id', conferenceIds)
+
+  if (conferenceError) {
+    console.error(
+      '[searchLexicalCorpus] conference metadata error:',
+      conferenceError
+    )
+    throw new Error('Búsqueda por palabras clave no disponible.')
+  }
+
+  const conferenceById = new Map(
+    ((conferenceRows ?? []) as ConferenciaPublica[]).map((conference) => [
+      conference.id,
+      conference,
+    ] as const)
+  )
+
+  const data = rows.map((row): ArchivoSearchConference => {
+    const conference = conferenceById.get(row.conferencia_id)
+
+    if (!conference) {
+      console.error(
+        '[searchLexicalCorpus] missing conference metadata:',
+        row.conferencia_id
+      )
+      throw new Error('Búsqueda por palabras clave no disponible.')
+    }
+
+    return {
+      ...conference,
+      id: row.conferencia_id,
+      extracto: row.texto,
+      lexicalContext: {
+        documentoId: row.documento_id,
+        pasajeId: row.pasaje_id,
+        orden: row.orden,
+        paginaInicio: row.pagina_inicio,
+        paginaFin: row.pagina_fin,
+        texto: row.texto,
+        relevancia: row.relevancia,
       },
     }
   })
@@ -518,7 +654,9 @@ export async function searchArchivoConferencias(
 
   const searchQuery = params.searchMode === 'exact'
     ? sanitizeExactQuery(params.query)
-    : sanitizeQuery(params.query)
+    : params.searchMode === 'lexical'
+      ? sanitizeLexicalQuery(params.query)
+      : sanitizeQuery(params.query)
 
   if (!searchQuery) {
     return { data: [], total: 0 }
@@ -526,6 +664,14 @@ export async function searchArchivoConferencias(
 
   if (params.searchMode === 'exact') {
     return searchExactCorpus({
+      query: searchQuery,
+      page,
+      limit,
+    })
+  }
+
+  if (params.searchMode === 'lexical') {
+    return searchLexicalCorpus({
       query: searchQuery,
       page,
       limit,

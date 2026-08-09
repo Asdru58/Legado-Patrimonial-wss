@@ -35,7 +35,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
   const pageParam = typeof resolvedSearchParams.page === 'string' ? resolvedSearchParams.page : '1'
   const currentPage = Math.max(1, parseInt(pageParam, 10) || 1)
 
-  let semanticSearchFailed = false
+  let failedSearchMode: SearchMode | null = null
   let searchResult: Awaited<ReturnType<typeof searchArchivoConferencias>> = {
     data: [],
     total: 0,
@@ -52,12 +52,12 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
       year: null,
     })
   } catch (error) {
-    if (searchMode !== 'semantic') {
+    if (searchMode !== 'semantic' && searchMode !== 'lexical') {
       throw error
     }
 
-    semanticSearchFailed = true
-    console.error('[ArchivoBusquedaPage] semantic search failed:', error)
+    failedSearchMode = searchMode
+    console.error(`[ArchivoBusquedaPage] ${searchMode} search failed:`, error)
   }
 
   const { data: conferencias, total } = searchResult
@@ -69,7 +69,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
   // 2) Búsqueda con término pero sin resultados
   // 3) Búsqueda con resultados
   const isIdle = !hasQuery
-  const isEmpty = hasQuery && !semanticSearchFailed &&
+  const isEmpty = hasQuery && failedSearchMode === null &&
     (total === 0 || conferencias.length === 0)
 
   return (
@@ -130,8 +130,10 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
             className="mt-3 text-base"
             style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}
           >
-            {semanticSearchFailed
+            {failedSearchMode === 'semantic'
               ? 'No fue posible completar la búsqueda semántica. No se ejecutó otra modalidad.'
+              : failedSearchMode === 'lexical'
+                ? 'Búsqueda por palabras clave no disponible. No se ejecutó otra modalidad.'
               : isIdle
               ? 'Ingresa un término, título o palabra clave para explorar las conferencias.'
               : isEmpty
@@ -139,7 +141,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
                 : `Mostrando ${conferencias.length} de ${total} coincidencias con ranking de relevancia.`}
           </p>
 
-          {searchMode === 'semantic' && (
+          {(searchMode === 'semantic' || searchMode === 'lexical') && (
             <div
               role="note"
               className="mt-5 rounded-xl border px-4 py-3 text-sm"
@@ -166,7 +168,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
         {/* ============================================
             RESULTADOS O ESTADOS VISUALES
             ============================================ */}
-        {semanticSearchFailed ? (
+        {failedSearchMode !== null ? (
           <div
             role="alert"
             className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border"
@@ -179,10 +181,14 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
               className="text-xl font-medium mb-2"
               style={{ color: 'var(--color-text-primary, rgba(255,255,255,0.9))' }}
             >
-              Búsqueda semántica no disponible
+              {failedSearchMode === 'semantic'
+                ? 'Búsqueda semántica no disponible'
+                : 'Búsqueda por palabras clave no disponible'}
             </h2>
             <p style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}>
-              El servicio semántico no respondió. Intenta nuevamente cuando esté disponible.
+              {failedSearchMode === 'semantic'
+                ? 'El servicio semántico no respondió. Intenta nuevamente cuando esté disponible.'
+                : 'La búsqueda léxica no respondió. Intenta nuevamente cuando esté disponible.'}
             </p>
           </div>
         ) : isIdle ? (
@@ -226,11 +232,25 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {conferencias.map((conf, idx) => (
-                <ConferenceCard
-                  key={conf.id}
-                  conferencia={conf}
-                  index={idx}
-                />
+                <div key={conf.id} className="flex flex-col gap-3">
+                  <ConferenceCard
+                    conferencia={conf}
+                    index={idx}
+                  />
+                  {searchMode === 'lexical' && conf.lexicalContext && (
+                    <div
+                      role="note"
+                      className="rounded-xl border px-4 py-3 text-sm leading-relaxed"
+                      style={{
+                        borderColor: 'rgba(212, 175, 55, 0.18)',
+                        background: 'rgba(212, 175, 55, 0.05)',
+                        color: 'var(--color-text-secondary, rgba(255,255,255,0.75))',
+                      }}
+                    >
+                      <p className="line-clamp-4">{conf.extracto}</p>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
 
