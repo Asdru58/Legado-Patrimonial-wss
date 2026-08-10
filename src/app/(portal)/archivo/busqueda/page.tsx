@@ -5,9 +5,10 @@
 // =========================================================
 
 import Link from 'next/link'
-import { searchArchivoConferencias, type SearchMode } from '@/lib/services/conferences'
+import { redirect } from 'next/navigation'
+import { searchArchivoConferencias } from '@/lib/services/conferences'
 import { ConferenceCard } from '@/components/ui/ConferenceCard'
-import { HeroSearch } from '@/components/hero/HeroSearch'
+import { HeroSearch, type PublicSearchMode } from '@/components/hero/HeroSearch'
 import { Pagination } from '@/app/(portal)/archivo/Pagination'
 
 type BusquedaPageProps = {
@@ -25,17 +26,23 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
   // Extracción de parámetros
   const queryParam = typeof resolvedSearchParams.query === 'string' ? resolvedSearchParams.query.trim() : ''
   const searchModeParam = resolvedSearchParams.search_mode
-  const searchMode: SearchMode =
-    searchModeParam === 'exact' ||
-    searchModeParam === 'semantic' ||
-    searchModeParam === 'lexical'
-      ? searchModeParam
-      : 'lexical'
   const hasQuery = queryParam.length > 0
   const pageParam = typeof resolvedSearchParams.page === 'string' ? resolvedSearchParams.page : '1'
   const currentPage = Math.max(1, parseInt(pageParam, 10) || 1)
 
-  let failedSearchMode: SearchMode | null = null
+  if (searchModeParam !== 'exact' && searchModeParam !== 'semantic') {
+    const normalizedParams = new URLSearchParams({ search_mode: 'exact' })
+
+    if (hasQuery) normalizedParams.set('query', queryParam)
+    if (currentPage > 1) normalizedParams.set('page', String(currentPage))
+
+    redirect(`/archivo/busqueda?${normalizedParams.toString()}`)
+  }
+
+  const searchMode: PublicSearchMode = searchModeParam
+  const searchModeLabel = searchMode === 'exact' ? 'Frase exacta' : 'Tema o enseñanza'
+
+  let failedSearchMode: 'semantic' | null = null
   let searchResult: Awaited<ReturnType<typeof searchArchivoConferencias>> = {
     data: [],
     total: 0,
@@ -52,7 +59,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
       year: null,
     })
   } catch (error) {
-    if (searchMode !== 'semantic' && searchMode !== 'lexical') {
+    if (searchMode !== 'semantic') {
       throw error
     }
 
@@ -132,16 +139,29 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
           >
             {failedSearchMode === 'semantic'
               ? 'No fue posible completar la búsqueda semántica. No se ejecutó otra modalidad.'
-              : failedSearchMode === 'lexical'
-                ? 'Búsqueda por palabras clave no disponible. No se ejecutó otra modalidad.'
               : isIdle
-              ? 'Ingresa un término, título o palabra clave para explorar las conferencias.'
-              : isEmpty
-                ? 'Ninguna coincidencia encontrada.'
-                : `Mostrando ${conferencias.length} de ${total} coincidencias con ranking de relevancia.`}
+                ? 'Ingresa una frase o un tema para explorar las conferencias.'
+                : (
+                    <>
+                      {isEmpty
+                        ? 'Ninguna coincidencia encontrada.'
+                        : `Mostrando ${conferencias.length} de ${total} coincidencias con ranking de relevancia.`}
+                      <span
+                        data-search-mode={searchMode}
+                        className="ml-3 inline-flex rounded-full border px-3 py-1 text-xs font-semibold"
+                        style={{
+                          borderColor: 'rgba(212, 175, 55, 0.32)',
+                          background: 'rgba(212, 175, 55, 0.10)',
+                          color: 'var(--color-gold, #D4AF37)',
+                        }}
+                      >
+                        {searchModeLabel}
+                      </span>
+                    </>
+                  )}
           </p>
 
-          {(searchMode === 'semantic' || searchMode === 'lexical') && (
+          {searchMode === 'semantic' && (
             <div
               role="note"
               className="mt-5 rounded-xl border px-4 py-3 text-sm"
@@ -181,14 +201,10 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
               className="text-xl font-medium mb-2"
               style={{ color: 'var(--color-text-primary, rgba(255,255,255,0.9))' }}
             >
-              {failedSearchMode === 'semantic'
-                ? 'Búsqueda semántica no disponible'
-                : 'Búsqueda por palabras clave no disponible'}
+              Búsqueda semántica no disponible
             </h2>
             <p style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}>
-              {failedSearchMode === 'semantic'
-                ? 'El servicio semántico no respondió. Intenta nuevamente cuando esté disponible.'
-                : 'La búsqueda léxica no respondió. Intenta nuevamente cuando esté disponible.'}
+              El servicio semántico no respondió. Intenta nuevamente cuando esté disponible.
             </p>
           </div>
         ) : isIdle ? (
@@ -236,20 +252,15 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
                   <ConferenceCard
                     conferencia={conf}
                     index={idx}
+                    exactMatch={
+                      searchMode === 'exact' && conf.exactContext
+                        ? {
+                            query: queryParam,
+                            context: conf.exactContext,
+                          }
+                        : undefined
+                    }
                   />
-                  {searchMode === 'lexical' && conf.lexicalContext && (
-                    <div
-                      role="note"
-                      className="rounded-xl border px-4 py-3 text-sm leading-relaxed"
-                      style={{
-                        borderColor: 'rgba(212, 175, 55, 0.18)',
-                        background: 'rgba(212, 175, 55, 0.05)',
-                        color: 'var(--color-text-secondary, rgba(255,255,255,0.75))',
-                      }}
-                    >
-                      <p className="line-clamp-4">{conf.extracto}</p>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
@@ -302,7 +313,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
               No se encontraron coincidencias
             </h2>
             <p style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}>
-              Intenta realizar una nueva búsqueda con otros términos o palabras clave.
+              Intenta realizar una nueva búsqueda con otra frase o tema.
             </p>
           </div>
         )}
