@@ -1,0 +1,31 @@
+{
+  "generado_utc": "2026-08-11T05:01:48.025376+00:00",
+  "normalizador_anterior": "normalizacion_paginada_v1",
+  "normalizador_corregido": "normalizacion_paginada_v2_1_guiones_lexico_20260811",
+  "sha256_lexico": "B75821DCA7E73A9A59289274E77E823F84436591E15C224011B0ECD7D1694ABC",
+  "universo_vinculado_auto_sin_piloto": 4559,
+  "precandidatos": 3989,
+  "muestra_recertificacion_candidatos": 200,
+  "muestra_recertificacion_piloto": 40,
+  "muestra_recertificacion_total": 240,
+  "decisiones_guion_auditadas": 1630,
+  "alteraciones_indebidas": 0,
+  "precandidatos_evaluados_hasta_objetivo": 3519,
+  "aprobados": 960,
+  "rechazados": 2559,
+  "motivos_rechazo": {
+    "cierre": 58,
+    "duplicacion": 11,
+    "inicio": 5,
+    "orden_logico": 2485
+  },
+  "conjunto_960_disponible": true,
+  "manifiesto": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\certificado_v2_1\\MANIFIESTO_SELECCION_960_NORMALIZACION_V2_1.csv",
+  "sha256_manifiesto": "5CA7ABD10A935AE81CBA658A8C0786DD8FDF2E5778A6556B6A839D49574809B1",
+  "auditoria_recertificacion": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\certificado_v2_1\\AUDITORIA_RECERTIFICACION_NORMALIZACION_V2_1.csv",
+  "sha256_auditoria": "7A11A7F18DB4E7BDF08AB4ED230016084C9DF8275B959CC61681ED842A6D29B0",
+  "rechazos_archivo": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\certificado_v2_1\\RECHAZOS_SELECCION_960.csv",
+  "sha256_rechazos": "52F1E1297E8F632A15C25816AC06A31EAE7A116FB9B81FFA5B8C63CB218A6B98",
+  "sin_embeddings": true,
+  "sin_supabase": true
+}
