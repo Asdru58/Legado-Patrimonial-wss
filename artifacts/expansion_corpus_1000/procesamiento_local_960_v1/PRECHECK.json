@@ -1,0 +1,31 @@
+{
+  "generado": "2026-08-11T08:58:00-04:00",
+  "estado": "PASS",
+  "checks": {
+    "commit_base": "27ed952ecc209f87f6c98261348a7fe6315ff5a7",
+    "manifest_sha256": "F3B9BC54AE89A1583B6FEE1678F4534921753291683DF782D644B592F35B605D",
+    "filas": 960,
+    "documentos_unicos": 960,
+    "conferencias_unicas": 960,
+    "solapamiento_documentos_40": 0,
+    "solapamiento_conferencias_40": 0,
+    "rutas_ausentes": 0,
+    "normalizadores_distintos": 0,
+    "lexicos_distintos": [
+      "B75821DCA7E73A9A59289274E77E823F84436591E15C224011B0ECD7D1694ABC"
+    ],
+    "modelo": "BAAI/bge-m3",
+    "revision": "142964af7e05de16511657561de8e8750fc153a0",
+    "modelo_sha256": "993B2248881724788DCAB8C644A91DFD63584B6E5604FF2037CB5541E1E38E7E",
+    "dimension": 1024,
+    "dtype": "float32",
+    "disco_libre_bytes": 11783016448,
+    "disco_libre_gib": 10.974,
+    "protegidos_40_sha256": {
+      "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\PILOTO_CORPUS_BUSCADOR_40\\MANIFIESTO_CORPUS_40.csv": "12B65B86EAE7807D6887019BB54276E70507032079F49E3BDB215C61C52F86E8",
+      "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\PILOTO_BUSCADOR_HIBRIDO_LOCAL\\indice\\pasajes.sqlite": "AAD81814221C5B5D34D90F1BE3B8086B1869D462F94A49F55CE1B616AEF7E769",
+      "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\PILOTO_BGE_M3_LOCAL\\salida\\embeddings_pasajes_bge_m3.npy": "031FC8A8CF39865A8366213CF33989FD144A346DC9AEED37E1175E1F9281CF4B"
+    }
+  },
+  "fallos": []
+}

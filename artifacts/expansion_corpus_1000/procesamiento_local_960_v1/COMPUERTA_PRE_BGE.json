@@ -1,0 +1,19 @@
+{
+  "generado": "2026-08-11T09:01:46-04:00",
+  "conferencias_objetivo": 960,
+  "conferencias_validas": 960,
+  "conferencias_excluidas": [],
+  "conferencias_vacias": 0,
+  "pasajes": 41921,
+  "pasajes_vacios": 0,
+  "paginas_invalidas": 0,
+  "orden_pasajes_inconsistente": 0,
+  "documento_id_duplicado": 0,
+  "conferencia_id_duplicado": 0,
+  "solapamiento_documentos_piloto_40": 0,
+  "solapamiento_conferencias_piloto_40": 0,
+  "estado": "PASS",
+  "sha256_pasajes_jsonl": "2C412B5EF49C1264DFF31627C4B7C9E8F7B58E8A5E87BCB382A4F3EB338C5C22",
+  "sha256_manifiesto_pasajes": "976F44753A8E51F20342D918B91C66252106E99C514D08C1C1DB62CA713FE8BE",
+  "sha256_manifiesto_conferencias": "6885AAD6921E9EC29FEB7EB9D7EDFC80B8AEF0BE0DE623D3A7A1135F14A0A563"
+}

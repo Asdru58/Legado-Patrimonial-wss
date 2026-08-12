@@ -1,0 +1,30 @@
+{
+  "generado": "2026-08-11T09:03:10-04:00",
+  "estado": "PASS",
+  "modelo": "BAAI/bge-m3",
+  "revision": "142964af7e05de16511657561de8e8750fc153a0",
+  "dimension": 1024,
+  "dtype": "float32",
+  "shape": [
+    8,
+    1024
+  ],
+  "nan": 0,
+  "inf": 0,
+  "norma_min": 1.0,
+  "norma_max": 1.0000001192092896,
+  "pasajes_prueba": 8,
+  "tiempo_s": 8.987,
+  "pasajes_minuto": 53.413,
+  "segundos_pasaje": 1.123,
+  "eta_total_horas": 13.081,
+  "tokenizacion": {
+    "pasajes": 41921,
+    "limite": 512,
+    "maximo": 484,
+    "mediana": 355.0,
+    "p95": 387.0,
+    "truncados": 0
+  },
+  "reanudacion_probada": "PASS"
+}

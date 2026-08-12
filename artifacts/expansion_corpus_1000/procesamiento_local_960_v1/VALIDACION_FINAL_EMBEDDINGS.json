@@ -1,0 +1,24 @@
+{
+  "generado": "2026-08-12T01:03:36-04:00",
+  "conferencias": 960,
+  "pasajes": 41921,
+  "embeddings": 41921,
+  "shape": [
+    41921,
+    1024
+  ],
+  "dtype": "float32",
+  "dimension": 1024,
+  "nan": 0,
+  "inf": 0,
+  "norma_l2_min": 0.9999998211860657,
+  "norma_l2_max": 1.000000238418579,
+  "norma_vectorial": "PASS",
+  "correspondencia_pasaje_embedding": "PASS",
+  "piloto_40_intacto": true,
+  "sha256_embeddings": "009FF1A640B2CE71823EBE5AFC493BABEFB20809989B650CBC9CEE465AAF5E46",
+  "sha256_mapa": "31A2C0C775F2D542DE77885D3F9BFEFA67BD4E7801108762936A344794BAEDBA",
+  "tiempo_total_bge_s": 35476.596,
+  "checkpoints_creados": 420,
+  "estado": "PASS"
+}

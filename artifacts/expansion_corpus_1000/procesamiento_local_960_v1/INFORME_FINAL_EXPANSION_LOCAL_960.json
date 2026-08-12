@@ -1,0 +1,60 @@
+{
+  "generado": "2026-08-12T01:03:50-04:00",
+  "conferencias_objetivo": 960,
+  "conferencias_procesadas": 960,
+  "conferencias_excluidas": [],
+  "pasajes_generados": 41921,
+  "promedio_pasajes_conferencia": 43.668,
+  "embeddings_generados": 41921,
+  "shape": [
+    41921,
+    1024
+  ],
+  "dtype": "float32",
+  "dimension": 1024,
+  "nan": 0,
+  "inf": 0,
+  "norma_vectorial": "PASS",
+  "correspondencia_pasaje_embedding": "PASS",
+  "bge_pasajes_minuto_real": 70.899,
+  "tiempo_total_bge_s": 35476.596,
+  "checkpoints_creados": 420,
+  "reanudacion_probada": "PASS",
+  "corpus_local": {
+    "conferencias_piloto": 40,
+    "conferencias_nuevas": 960,
+    "conferencias_totales": 1000,
+    "pasajes_piloto": 1973,
+    "pasajes_nuevos": 41921,
+    "documentos_duplicados": 0,
+    "conferencias_duplicadas": 0
+  },
+  "prueba_semantica_local": "PASS",
+  "sha256_artefactos_finales": {
+    "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\MANIFIESTO_PASAJES_960.csv": "976F44753A8E51F20342D918B91C66252106E99C514D08C1C1DB62CA713FE8BE",
+    "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\MANIFIESTO_CONFERENCIAS_PROCESADAS_960.csv": "6885AAD6921E9EC29FEB7EB9D7EDFC80B8AEF0BE0DE623D3A7A1135F14A0A563",
+    "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\PASAJES_960.jsonl": "2C412B5EF49C1264DFF31627C4B7C9E8F7B58E8A5E87BCB382A4F3EB338C5C22",
+    "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\embeddings_bge_m3_960.npy": "009FF1A640B2CE71823EBE5AFC493BABEFB20809989B650CBC9CEE465AAF5E46",
+    "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\MAPA_PASAJE_EMBEDDING_960.csv": "31A2C0C775F2D542DE77885D3F9BFEFA67BD4E7801108762936A344794BAEDBA",
+    "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\checkpoints\\checkpoint_bge_m3_960.json": "5871FAC61158ADF1AE2AE96209DB93B05A564917D80D784AF50682705E4DB299",
+    "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\COMPUERTA_PRE_BGE.json": "95BC2F9BE1792DBFEC2DD6BB86F8FF71D3EFDBB1E1E675931090AE94E1B1C88D",
+    "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\PRUEBA_CORTA_BGE_M3.json": "58BA6D8FFB8514FCE13193A64DFE926498127D4B2BFB0950E926C8967CE7AD39",
+    "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\VALIDACION_FINAL_EMBEDDINGS.json": "63DC67338544D7E026CBD7A4D340D94E3823B25861DEC2CB045E6DAB87624364",
+    "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\PRUEBA_SEMANTICA_LOCAL_40_MAS_960.json": "5DFB0B62DDBCF26AB3D23176ED62D061766249FB3934D8F2889069A98BB4A0D9"
+  },
+  "rutas": {
+    "manifiesto_final_pasajes": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\MANIFIESTO_PASAJES_960.csv",
+    "manifiesto_conferencias": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\MANIFIESTO_CONFERENCIAS_PROCESADAS_960.csv",
+    "textos_brutos": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\textos_brutos",
+    "textos_normalizados": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\textos_normalizados",
+    "pasajes": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\PASAJES_960.jsonl",
+    "embeddings": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\embeddings_bge_m3_960.npy",
+    "mapa_pasaje_embedding": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\MAPA_PASAJE_EMBEDDING_960.csv",
+    "checkpoints": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\checkpoints",
+    "informe_final": "C:\\Users\\USUARIO\\Legado Patrimonial WSS\\artifacts\\expansion_corpus_1000\\procesamiento_local_960_v1\\INFORME_FINAL_EXPANSION_LOCAL_960.md"
+  },
+  "incidencias": [],
+  "supabase_modificado": false,
+  "git_commit": false,
+  "git_push": false
+}

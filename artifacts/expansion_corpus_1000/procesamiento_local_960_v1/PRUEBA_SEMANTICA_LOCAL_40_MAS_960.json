@@ -1,0 +1,396 @@
+{
+  "generado": "2026-08-12T01:03:48-04:00",
+  "estado": "PASS",
+  "corpus_local": {
+    "conferencias_piloto": 40,
+    "conferencias_nuevas": 960,
+    "conferencias_totales": 1000,
+    "pasajes_piloto": 1973,
+    "pasajes_nuevos": 41921,
+    "documentos_duplicados": 0,
+    "conferencias_duplicadas": 0
+  },
+  "dimension": 1024,
+  "threshold": "NO_FIJADO",
+  "indice_hnsw": "NO_CREADO",
+  "consultas": [
+    {
+      "consulta": "¿De qué manera se repite hoy la visita divina que descubrió a Abraham lo oculto en Sara antes de Sodoma?",
+      "top10": [
+        {
+          "posicion": 1,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.66355461,
+          "pasaje_id": "25502f56-ca77-5a3a-98b0-0b77aba36894",
+          "conferencia_id": "2e1a8f60-a8fb-4ce2-affd-499d213eaee9",
+          "documento_id": "5a58209a-608c-4b71-8456-d30de845ccdf",
+          "titulo": "Hemos hallado al Mesias. sencillo",
+          "pagina_inicio": 5,
+          "pagina_fin": 6,
+          "texto": "ocasión\ncomo Melquisedec, y luego también le confirmaba esta\npromesa en otras ocasiones, y le cambió también el\nnombre a Abraham, de Abram por Abraham, y el nombre\nde Saraí por Sara; y luego vino el cumplimiento de esa\npromesa.\n\nEl día antes de la destrucción de Sodoma y de Gomorra\nle apareció Dios, y Abraham le llamó Elohim; apareció\nDios con Sus dos Arcángeles, Gabriel y Miguel, en forma\nvisible; y comió con Abraham: Elohim y los Arcángeles\nGabriel y Miguel. Y luego que tuvieron una comida, o sea,\nun almuerzo (diríamos, de 12 a 3 o 4 de la tarde), luego\nse fueron; ya a la caída del sol se fueron los Arcángeles\nGabriel y Miguel hacia Sodoma, y llegaron hasta la plaza\nde la ciudad.\n\nPero Abraham se quedó y Dios se quedó con\nAbraham, y estuvo Dios diciéndole, Elohim estuvo\ndiciéndole a Abraham las cosas que Él llevaría a cabo;\nle dijo el propósito de Su venida en carne humana, en\ncarne, en forma visible, porque Dios se materializó para\nesta visita que le hizo a Abraham, como también fueron\nmaterializados los Arcángeles Gabriel y Miguel; pues un\nespíritu no puede comer, pero si se materializa entonces sí\npuede comer.\n\nY ahora, encontramos que está Elohim hablando con\n\nDr. William Soto Santiago\nAbraham y le está diciendo el propósito de Su venida a\ncausa del pecado de Sodoma y Gomorra, el cual ha llegado\nhasta la presencia de Dios. Y cuando llega a tal grado, y"
+        },
+        {
+          "posicion": 2,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.65518063,
+          "pasaje_id": "e038597e-d9fc-59b2-8bae-e733f242dcb6",
+          "conferencia_id": "2e1a8f60-a8fb-4ce2-affd-499d213eaee9",
+          "documento_id": "5a58209a-608c-4b71-8456-d30de845ccdf",
+          "titulo": "Hemos hallado al Mesias. sencillo",
+          "pagina_inicio": 5,
+          "pagina_fin": 6,
+          "texto": "hablando con\n\nDr. William Soto Santiago\nAbraham y le está diciendo el propósito de Su venida a\ncausa del pecado de Sodoma y Gomorra, el cual ha llegado\nhasta la presencia de Dios. Y cuando llega a tal grado, y se\ncumple la maldad de la gente, entonces Dios se manifiesta\npara traer el juicio sobre el pueblo, un pueblo o una nación,\no naciones, pueblos y lenguas; y en esta ocasión le tocó a\nSodoma y Gomorra.\n\nPor eso Sodoma y Gomorra, al igual que Egipto y al\nigual que el mundo antediluviano, son tipo y figura del\nmundo del tiempo presente. Por eso Jesús dijo que la\nVenida del Hijo del Hombre sería como en los días de\nNoé1, y también como en los días de Lot2, en donde el\njuicio divino fue derramado sobre las personas, porque\nhabía llegado el tiempo en que Dios derramaría el juicio\ndivino, porque se había cumplido la maldad de esas\npersonas; y así es para este tiempo final.\n\nAhora, hemos visto a Elohim en la visita que le hizo a\nAbraham y donde estuvo comiendo con Abraham, que le\nconfirmó o reconfirmó la promesa del hijo prometido.\n\nY Sara, que estaba a la parte de atrás de Elohim, en\nla tienda, o sea, en la carpa donde vivían (porque ellos\nvivían en carpas, en tabernáculos), encontramos que Sara\nescuchó lo que Elohim le está diciendo a Abraham. Esto\nestá en el capítulo 18 del Génesis; versos 7 en adelante\ndice… Vamos"
+        },
+        {
+          "posicion": 3,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.64372307,
+          "pasaje_id": "bdb48f14-1ed6-5a2b-887f-10eab0fa6ed1",
+          "conferencia_id": "f8081e1a-706e-4858-a611-052f7066f025",
+          "documento_id": "36d49e80-be45-4360-a896-2ae8b6391b43",
+          "titulo": "Voz de Mando Voz de Arcangel y Trompeta de Dios",
+          "pagina_inicio": 21,
+          "pagina_fin": 22,
+          "texto": "Sara 89 años cuando le\napareció Elohím el día antes de la destrucción de Sodoma y\nGomorra, y comió con Abraham, apareció con los Arcángeles\nGabriel y Miguel.\nAhora, vean ustedes cómo está señalado también para nuestro\ntiempo la Venida del Hijo del Hombre, así como fue en los días\nde Lot, donde le apareció Elohím con Sus Arcángeles a Abraham.\nTodo estaba ligado al rejuvenecimiento de Abraham y Sara para\npoder tener el hijo prometido, y para el mundo tenía que ver con\nel juicio que iba a venir sobre Sodoma y Gomorra.\nLa Venida del Hijo del Hombre para nosotros con Sus\nAngeles, es para bendición, es para el rejuvenecimiento de todos\nlos escogidos de Dios, de la descendencia de Abraham, eso será\nElohím con Sus Arcángeles, eso será el Hijo del Hombre con Sus\nAngeles en la manifestación correspondiente al tiempo final.\nY estará aquí en la Tierra un Profeta Mensajero\ndispensacional, para dar testimonio de todas estas cosas que\ndeben suceder pronto y revelarnos así los misterios de todas estas\npromesas divinas que deben ser cumplidas en este tiempo final.\nY Cristo, el Espíritu Santo, estará operando estos ministerios\n\nWILLIAM SOTO SANTIAGO\nde los Angeles del Hijo del Hombre, los ministerios de Moisés y\nElías, de los Dos Olivos, y el ministerio de Jesús, los estará\noperando el Espíritu Santo en Su Angel Mensajero del Día\nPostrero, y por eso escucharemos esa Gran Voz de Trompeta o\nTrompeta Final, a través del Angel del Señor Jesucristo"
+        },
+        {
+          "posicion": 4,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.63338852,
+          "pasaje_id": "3a57c211-22d2-522f-ac04-f29193e8a0a5",
+          "conferencia_id": "42b596e1-8059-4848-b6f3-109f456aea71",
+          "documento_id": "e4377dd3-ea80-46bd-95b2-615a098b0b44",
+          "titulo": "1 El Galardon de Abraham.",
+          "pagina_inicio": 9,
+          "pagina_fin": 10,
+          "texto": "obras de fe\npero antes de hacerlas ya Dios vio la fe en el alma de la persona.\nAhora Dios le dice:\n“No es así, sino que te has reído.\nY los varones se levantaron de allí, y miraron hacia Sodoma;\ny Abraham iba con ellos acompañándolos.”\nComo que eso que pensó negativamente Sara, como producto\nde la incredulidad, ocasionó que ya se terminase esa visita y ya\nse levantaron, se despidieron y se fueron rumbo hacia Sodoma;\npero Abraham continúo con ellos, e iba al lado del Elohím, y\naún Elohím, luego que los arcángeles Gabriel y Miguel bajaron\na Sodoma y Gomorra, Elohím todavía permanecía con Abraham.\nAhora vean ustedes la promesa de Dios para Abraham sería\ncumplida aun aunque hubo un poco de duda en Sara, pero en\nAbraham no (eso ayudó a Sara).\nY ahora, la bendición grande para Sara es que va a tener un\n\nWILLIAM SOTO SANTIAGO\nhijo, va a darle un hijo a Abraham y Dios va a cumplir Su\npromesa, ese hijo va a ser el tipo y figura del Mesías; por eso es\nque para el cumplimiento de esta promesa, siendo que ellos no\npodían tener hijos ya por la edad avanzada y para colmo Sara\nera estéril, estéril y ya vieja, estéril dos veces.\nY ahora, ¿qué hace Dios? Miren haber... luego en el capítulo\n20, dice:\n“De allí partió Abraham a la tierra del Neguev, y acampó\nentre Cades y Shur, y habitó como forastero en Gerar.\nY dijo"
+        },
+        {
+          "posicion": 5,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.63328147,
+          "pasaje_id": "31aa6cb6-30e3-58a9-ae93-66adb401d2db",
+          "conferencia_id": "ad9f2946-0928-430e-8dc4-f67f0952f951",
+          "documento_id": "91bee5bd-920a-4a5e-a3dc-5e30fbb03580",
+          "titulo": "La Visita de los Angeles a la Simiente de Abraham.",
+          "pagina_inicio": 12,
+          "pagina_fin": 13,
+          "texto": "con su familia, y\nque no se detuviera y no mirara hacia atrás. Ya el juicio\ndivino estaba señalado, y los Ángeles le dijeron a Lot para\nqué ellos habían ido a Sodoma y Gomorra. Ellos dijeron:\n“Dios nos ha enviado para destruir esta ciudad”.\n\nY siendo que Los Ángeles, California, también tiene\nesa sentencia, tenemos que estar atentos, conscientes de\nesa verdad profética que ya fue hablada y que ha estado\nsiendo confirmada. No hay retroceso a esa profecía que\nfue hablada.\n\nAhora, la visita de Dios con Sus Ángeles a Abraham\nfue para bendición, para anunciarle que ya para el\n6 Citas, pág. 148, párr. 1322, pág. 169, párr. 1510, pág. 13-A, párr. 135\n\nLa Visita de los Ángeles a la simiente de Abraham\npróximo año iban a tener el hijo prometido, a Isaac; e\nIsaac representa a Cristo, representa la Venida del Señor,\nel Hijo prometido. Y por consiguiente tenían que ser\ntransformados Abraham y Sara, porque ellos ya estaban\nancianitos, Abraham de 99 años y Sara de 89 años. Pero\ncon la visita de Dios y Sus Ángeles a Abraham y Sara,\nluego estuvieron transformados.\n\nY cuando se van a tierra de Abimelec, el rey de\nGerar, ahora el rey se enamora de Sara7. ¿Y quién se va\na enamorar de una ancianita de 89 años? Es que estaban\nrejuvenecidos. Y eso tipifica la transformación de los\nvivos en Cristo, y la resurrección de los muertos creyentes\nen Cristo que van a resucitar en cuerpos"
+        },
+        {
+          "posicion": 6,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.63281292,
+          "pasaje_id": "c1f6cce8-7d2b-5ccb-b1c7-90c77b2b4de3",
+          "conferencia_id": "b368ffcf-79dc-4a47-9103-743d65e83804",
+          "documento_id": "983e43d8-f97f-4d9f-947c-319e41a61ff2",
+          "titulo": "Escapa por tu Vida. sencillo",
+          "pagina_inicio": 8,
+          "pagina_fin": 9,
+          "texto": "que como fue en\nlos días de Lot será la Venida del Hijo del Hombre. En los días de Lot encontramos que estaba\nAbraham allí, un profeta dispensacional, y visitaron a Abraham estos tres varones: Gabriel, Miguel\ny Dios; Dios, o sea, el mismo Jesucristo que se materializó allí para esa visita.\nY luego de comer con Abraham, Gabriel y Miguel descendieron a Sodoma y Gomorra;\n\nESCAPA POR TU VIDA\ndescendieron porque Abraham vivía en la montaña y Lot vivía allá en el llano, en Sodoma.\nY ahora, como fue en aquellos días será la Venida del Hijo del Hombre en este tiempo final.\nAhora, esto será actualizado en este tiempo final como fue actualizado o como les dije que será\nactualizado también el encuentro de Jacob con el Angel.\nY ahora, este misterio de Abraham encontrándose con Elohim, vean ustedes, se cumplió o se\ncumple en Su Primera Venida y en Su Segunda Venida.\nEn Su Primera Venida está allí con el pueblo hebreo en carne humana, y le dice: “Abraham deseó\nver mi día, lo vio y se gozó.” Le dicen: “No tienes 50 años, ¿y dices que has visto a Abraham?” Están\npeleando con Jesús, están discutiendo con Jesús; y Jesús les dice: “Antes que Abraham fuese, yo soy.”\nY eso fue más duro todavía. Tomaron piedras y querían apedrearlo, y Jesús se fue de en medio de\nellos. No se podía hablar ni discutir con gente que no presta atención a la enseñanza de la revelación"
+        },
+        {
+          "posicion": 7,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.63202786,
+          "pasaje_id": "ae070c19-37ce-5f8d-83c7-eee80e604272",
+          "conferencia_id": "968edf83-adea-49c7-9b81-042414c4a8ec",
+          "documento_id": "396c9871-80a0-4c3e-a2c7-b524bf947019",
+          "titulo": "Para Dios todo es posible. sencillo",
+          "pagina_inicio": 3,
+          "pagina_fin": 4,
+          "texto": "por medio de su esposa Sara. Le cambió el\nnombre a Abraham y el nombre a Sara. O sea le añadió letras al nombre de Abraham. Y al\nnombre de Sara, en la traducción al español dice: Saraí, y le quitó la ‘i’ y quedó Sara. En inglés,\npues es una ‘h’ la que le es añadida al final. (Depende el idioma al cual es traducida la Biblia).\nAhora, en el capítulo 18 le aparece como Elohim, el día antes de la destrucción de\nSodoma y de Gomorra; y Abraham lo invita a comer, y Elohim acepta la invitación. Elohim\nestaba con dos Angeles más, que son los Arcángeles Gabriel y Miguel. Se habían hecho visibles\na Abraham. Se habían materializado delante de Abraham, y por eso podían comer. (Porque un\n\nWILLIAM SOTO SANTIAGO\nespíritu no puede comer, pero si se materializa sí puede comer).\nY ahora, esto es tipo y figura de lo que estará sucediendo en el tiempo final, antes de la\ndestrucción del reino del anticristo, del reino de los gentiles, representado ese reino en el reino de\nSodoma y Gomorra. Y también representado en el reino del Faraón en Egipto. Y representado\ntambién en el gobierno que hubo en los días de Noé, antes del diluvio.\nAhora, para el tiempo final el Hijo del Hombre vendrá, y esos días serán como los días de\nNoé y como los días de Lot... Los días de Lot son los días de Abraham. Porque Abraham era el\nmensajero dispensacional"
+        },
+        {
+          "posicion": 8,
+          "origen": "PILOTO_40",
+          "puntuacion": 0.63102031,
+          "pasaje_id": 127,
+          "conferencia_id": "3a02c682-e330-4712-8ce4-4b03f4796101",
+          "documento_id": "fd92b95d-c710-417d-980a-04481108f534",
+          "titulo": "El Evangelio del Reino y los Falsos Profetas",
+          "pagina_inicio": 16,
+          "pagina_fin": 17,
+          "texto": "fuesen como los días de Sodoma y de Gomorra,\ncomo el tiempo de Lot14. ¿Y cómo se manifestó allá?\nEn carne humana. Y eso mismo se repetiría, y haría\nla misma señal. ¿Y cuál fue la señal que hizo allá? Le\nreveló los secretos del corazón de Sara, y le cambio\ntambién el nombre15. ¿Cuál es la señal que estaría\nsupuesto hacer acá? La misma señal. Cuando Dios\nse manifestase en carne humana en este tiempo como\nhabía prometido, entonces tendría que hacer la señal\nque hizo allá, que fue: revelar los secretos del corazón\nde las gentes.\n36.\nNosotros lo hemos visto en este tiempo hacer la\nmisma cosa a través de carne humana. Lo hemos visto\nSan Juan 10:27, 18:38, 10:5\nSan Mateo 24:37-39, San Lucas 17:26-32\nGénesis 18:12-15\n\nEL EVANGELIO DEL REINO Y LOS FALSO PROFETAS\nen película16, lo hemos leído también en los mensajes.\nHemos visto como él, el Hermano Branham, ha\ndicho: “Si Él está aquí, si Él es el mismo ayer, hoy\ny siempre, tiene que hacer la misma cosa que hizo\nayer; y entonces, Él reveló los secretos del corazón de\nlas gentes ayer, lo tiene que hacer hoy también, si es\nel mismo, si está aquí” 17. Y se ha virado de espaldas\na la congregación [el Hermano William se vira de\nespaldas por un momento para ejemplificarle a la\ncongregación], y ha comenzado a llamar a las personas\npor sus nombres, y"
+        },
+        {
+          "posicion": 9,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.62393606,
+          "pasaje_id": "9992b75a-40fe-57fa-9a7f-05bedd888e7d",
+          "conferencia_id": "aedd9fad-1133-40c7-883f-c8e7ec81f91a",
+          "documento_id": "764b5789-12fa-47da-9785-09e0b8abae7d",
+          "titulo": "El Camino a la Ciudad Eterna.",
+          "pagina_inicio": 18,
+          "pagina_fin": 19,
+          "texto": "Elohím con Sus\narcángeles Gabriel y Miguel, Abraham y Sara luego fueron\nrejuvenecidos, Sodoma y Gomorra fue destruida; pero ellos\nse mudaron a otro lugar, y allá se enamoró un rey de Sara, la\ncual estaba muy hermosa y había sido rejuvenecida, para\nDios cumplir a Abraham la promesa que le había hecho de\nque tendría un hijo por medio de Sara; y Abraham también\nestaba rejuvenecido.\nAhora, vean ustedes este misterio de Abraham, Sara e\nIsaac; y Abraham, Agar e Ismael. Miren lo que dice San\nPablo:\n“Pero el de la esclava nació según la carne; mas el de la\nlibre, por la promesa.\nLo cual es una alegoría (o sea, esto es una parábola, es un\ntipo y figura), pues estas mujeres son los dos pactos...”\nLos dos pactos están aquí representados: el Pacto de Dios\nbajo la Ley y el Pacto de Dios bajo la Gracia, bajo la Sangre\ndel Nuevo Pacto, la Sangre de Jesucristo.\n“Lo cual es una alegoría, pues estas mujeres son los dos\npactos; el uno proviene del monte Sinaí (¿Ven? Donde Dios\nle dio la Ley), el cual da hijos para esclavitud (o sea, que\ntodos los que están bajo la Ley son hijos que están bajo\nesclavitud); éste es Agar.\nPorque Agar es el monte Sinaí en Arabia, y corresponde a\nla Jerusalén actual (la Jerusalén terrenal), pues ésta, junto\ncon sus hijos, está en esclavitud.\n\nEL CAMINO A LA CIUDAD ETERNA\nMas la Jerusalén de arriba, la cual es madre"
+        },
+        {
+          "posicion": 10,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.62384838,
+          "pasaje_id": "5ff9833e-f5d1-53b6-b306-0a78ce3af8e3",
+          "conferencia_id": "e12c6fc0-b757-42b2-b93b-a096690df2c1",
+          "documento_id": "8d03a00f-8c76-41ca-bbfd-71749c78a034",
+          "titulo": "La Visita de Elohim y la Destrucción del Mundo",
+          "pagina_inicio": 6,
+          "pagina_fin": 7,
+          "texto": "ve? Entonces sigue con Él caminando,\ny Dios viene y dice6: “¿Encubriré Yo a Abraham mi\nsiervo, lo que yo voy a hacer?”\n17. Ahora, ¿no se da cuenta usted, que mientras estuvo\nallá comiendo y discerniendo el corazón de las gentes,\nno le reveló lo que Él habría de hacer allá al mundo?\nSino que le habló del Hijo prometido, le habló del hijo\nque le habría de venir, y le discernió el corazón a Sara y\ncomió con ellos. Pero luego Abraham sigue caminando\ncon Él, y Sara allá se queda fregando y haciendo los\nquehaceres allá, y bastante asustada ¡Imagínese! Con\nlo que pasó allí, pues bastante asustada se quedó.\nSPN 58-0309E “¿Se Irá La Iglesia Antes De La Tribulación?”,\npág.7, párr. 47. Jeff., Ind. E.U.A\nGénesis 18:17-19\n\nLA VISITA DE ELOHIM Y LA DESTRUCCIÓN DEL MUNDO\n18. Entonces ya Dios cuando va a descender, y están\nretiraditos ya de la carpa, de la casa de Abraham, bueno, ya\npara bajar, Dios dice: “¿Le encubriré Yo a Abraham lo que\nvoy a hacer, sabiendo que él le va a enseñar a su descendencia\na actuar correctamente? ¿Conociéndolo Yo a él como le\nconozco? No le encubriré Yo a Abraham lo que Yo voy a\nhacer, por lo tanto, le voy a decir lo que Yo voy a hacer”.\n19. Entonces ya estamos viendo la visita de Elohim, ¿y\nqué? Y el propósito de la visita de Elohim, o sea, el\npropósito"
+        }
+      ],
+      "nuevas_en_top10": 9
+    },
+    {
+      "consulta": "¿Por qué valora el Creador una ofrenda según la proporción de lo que cada persona posee y la sinceridad con que la entrega?",
+      "top10": [
+        {
+          "posicion": 1,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.6418485,
+          "pasaje_id": "8e397642-76a9-531d-9300-677bc96a1b0c",
+          "conferencia_id": "51ece787-8df4-470c-8886-76cb4429e747",
+          "documento_id": "b53aa21e-29ee-49b5-ae87-5bb9e40d965a",
+          "titulo": "Una Obra cuyo disenador es Dios.",
+          "pagina_inicio": 5,
+          "pagina_fin": 7,
+          "texto": "es de todo\ncorazón, porque Dios ama ¿a quién? Al dador alegre, al que\nofrenda de buena voluntad para Dios, el que se alegra en\nofrendar para Dios, porque por más que ofrendemos para\nDios, todavía estamos ofrendándole a Dios, de lo que Dios\nnos ha dado a nosotros, porque Él dice: “Mía es la tierra y\n\nsu plenitud.” La plata, el oro, todo es de Él, porque Él es el\nCreador, diseñador y Creador del universo:\n\nUNA OBRA CUYO DISEÑADOR ES DIOS\n“Esta es la ofrenda que tomaréis de ellos: oro, plata,\ncobre,\nazul, púrpura, carmesí, lino fino, pelo de cabras,\npieles de carneros teñidas de rojo, pieles de tejones,\nmadera de acacia,\naceite para el alumbrado, especias para el aceite de la\nunción y para el incienso aromático,\npiedras de ónice, y piedras de engaste para el efod y\npara el pectoral.\nY harán un santuario para mí, y habitaré en medio de\nellos.\nConforme a todo lo que yo te muestre, el diseño del\ntabernáculo, y el diseño de todos sus utensilios, así lo\nharéis.”\nQue Dios bendiga nuestras almas con Su Palabra y\nnos permita entenderla.\n“UNA OBRA CUYO DISEÑADOR ES DIOS.”\nDios es el Creador de los Cielos y de la Tierra, de Él\ndice el Génesis, capítulo 1, verso 1: “En el principio creó\nDios los cielos y la tierra.” Génesis, capítulo 1, verso 1, y\npara comprender cómo fue que Dios creó los Cielos y la\nTierra, en San Juan, capítulo 1, verso"
+        },
+        {
+          "posicion": 2,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.61646283,
+          "pasaje_id": "fea99129-2b36-5948-934c-5cd050c3c8eb",
+          "conferencia_id": "77625331-2b22-4b27-b64d-f387f90d11a8",
+          "documento_id": "cc228927-d57b-4ffe-8fc1-911ea73860bd",
+          "titulo": "La Fiesta hebrea de pentecostes o Shavuot.",
+          "pagina_inicio": 5,
+          "pagina_fin": 6,
+          "texto": "bronce, le explicó todo lo que había\nalmacenado, o sea, que él no estaba almacenando para ser rico,\nsino para la construcción de un templo para Dios. Eso si es\nbueno hacer: economizar para la Obra de Dios.\nY le fue dada también la oportunidad a todo el pueblo, para\nque así como David de todo corazón estaba ofrendando sus\nriquezas, todo lo que Dios le había dado, él lo estaba\nacumulando para la construcción del templo. Con ofrendas\nvoluntarias como la de David, todo el pueblo ofrendó a Dios,\nno tuvieron que decir: “Vamos hacer una cena, y todo el mundo\nva a pagar una entrada de tanto, o vamos a hacer una gran\nactividad, ya sea un concierto o sea lo que sea.”\nNo, se le dio la oportunidad a todos para que\nvoluntariamente ofrendaran sin esperar nada a cambio, porque\nsi se le da algo a cambio, pues ya recibió la recompensa, ya\nusted pagó por una comida o por una actividad de música,\ncomo le llaman... concierto (o algo parecido), ya recibió su\nrecompensa.\nPero cuando se hace sin esperar nada a cambio, de todo\ncorazón, Dios lo recompensará en Su Reino. Por eso siempre\nle he dicho a Miguel y hemos hablado Miguel y yo, que\nsiempre es bueno que las personas ofrenden de voluntad, de\n\nWILLIAM SOTO SANTIAGO, PH.D.\ntodo corazón, sin esperar nada a cambio, Dios lo recompensará:\n“He aquí yo vengo pronto y mi galardón conmigo, para\nrecompensar a cada uno"
+        },
+        {
+          "posicion": 3,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.615677,
+          "pasaje_id": "25280bad-d038-5e5c-8408-93e34d7f1cf4",
+          "conferencia_id": "a4def983-d721-4d46-8973-abe105285533",
+          "documento_id": "d9169086-5dae-4ad9-abf8-a6cc1b29278c",
+          "titulo": "Solo Dios es digno de adoracion y servicio.",
+          "pagina_inicio": 5,
+          "pagina_fin": 6,
+          "texto": "forma correcta de adoración al Dios\ncreador de los Cielos y de la Tierra, que es el Dios de Abraham,\nde Isaac y de Jacob.\nDesde el Génesis encontramos personas ofreciendo\nadoración a Dios. Encontramos, por ejemplo, a Caín y a Abel.\nCaín trajo de los frutos del campo a Dios y trajo una ofrenda a\nDios, pero Dios no miró con agrado la ofrenda de Caín; Abel\ntrajo una ofrenda a Dios de los animales, de las ovejas, y\nofreció esa ofrenda, ese sacrificio, a Dios, y agradó a Dios.\n¿Y por qué Dios acepta la ofrenda (sacrificio) de uno y la\ndel otro no? Porque uno trajo una ofrenda y sacrificio\n\nDR. WILLIAM SOTO SANTIAGO\n\nincorrecto, y otro trajo la ofrenda correcta, el sacrificio\ncorrecto. O sea, que no es como algunas personas piensan, que\na Dios uno le sirve como quiera y que Dios lo aceptará: tiene\nque ser como Él ha establecido en Su Palabra.\nAhora, ¿por qué no aceptó la adoración y ofrenda de Caín,\ny sí aceptó la de Abel? Porque la ofrenda de Abel, siendo un\nanimalito, un cordero, representaba a Jesucristo, el Cordero de\nDios, que vendría a este mundo y sería sacrificado por el ser\nhumano, y con Su Sangre nos limpiaría de todo pecado.\nY ya, vean ustedes, está reflejando allí, en aquel sacrificio\nque Abel ofreció a Dios, se está reflejando la Primera Venida\nde Cristo y Su Obra de Redención en la Cruz del Calvario. Y\nAbel quedó"
+        },
+        {
+          "posicion": 4,
+          "origen": "PILOTO_40",
+          "puntuacion": 0.60234106,
+          "pasaje_id": 1657,
+          "conferencia_id": "f48efc80-ddbf-4900-9c87-721166157b40",
+          "documento_id": "6891eaa0-80e9-4da8-aa9a-ebce711ad9d4",
+          "titulo": "1 Dios dando sabiduria e inteligencia a sus hijos.",
+          "pagina_inicio": 4,
+          "pagina_fin": 5,
+          "texto": "ofrenda obligatoria, sino\nque tomaran esa ofrenda de todo varón que la diera\nvoluntariamente, de su voluntad, de corazón; de esas\npersonas tomaría la ofrenda.\n\nNo de personas que dijeran o que pensaran: “Ahora\nme están pidiendo que haga tal cosa”. No.\n\n—“Ahora quiero hacer tal cosa, porque en el Programa\nde Dios está que va a ser hecha esta labor, va a ser hecho\nun tabernáculo donde la presencia de Dios va a estar”.\n\nY es un privilegio grande trabajar en un proyecto\ndivino donde la presencia de Dios está prometida para\nestar allí manifestada.\n\nSigue diciendo:\n\n“Esta es la ofrenda que tomaréis de ellos: oro, plata, cobre,\n\nazul, púrpura, carmesí, lino fino, pelo de cabras,\n\npieles de carneros teñidas de rojo, pieles de tejones,\nmadera de acacia,\n\nDios dando sabiduría e inteligencia a Sus hijos...\n\naceite para el alumbrado, especias para el aceite de la\nunción y para el incienso aromático,\n\npiedras de ónice, y piedras de engaste para el efod y\npara el pectoral.\n\nY harán un santuario para mí, y habitaré en medio de\nellos”.\n\nLo grande de todo ese proyecto es este verso:\n\n“Y harán un santuario para mí, y habitaré en medio\nde ellos”.\n\nLo importante es la presencia de Dios. Y si dijo que Su\npresencia va a estar en ese tabernáculo, por lo tanto ese es\nel lugar más importante y es el proyecto más importante\nde construcción que llevaría a cabo el pueblo.\n\nY ahora le dice a Moisés:\n\n“Conforme a"
+        },
+        {
+          "posicion": 5,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.60197008,
+          "pasaje_id": "1eb63669-a77f-5ed4-9fcb-9be958c8f4ec",
+          "conferencia_id": "51ece787-8df4-470c-8886-76cb4429e747",
+          "documento_id": "b53aa21e-29ee-49b5-ae87-5bb9e40d965a",
+          "titulo": "Una Obra cuyo disenador es Dios.",
+          "pagina_inicio": 5,
+          "pagina_fin": 5,
+          "texto": "un pasaje que se encuentra en el Éxodo,\ncapítulo 25, versos 1 al 9, para poder tener un cuadro claro\nde nuestro tema: “UNA OBRA CUYO DISEÑADOR ES\nDIOS.” Por lo tanto vamos a ver una obra diseñada por\nDios y cómo Dios la ve, porque si la diseña Dios, tiene un\npropósito en el Programa de Dios, y la diseña Dios y la\nmuestra a quien tiene que llevarla a cabo con el pueblo.\nDice el capítulo 25 del Éxodo, capítulo 25, verso 1 al 9...\nEsto fue luego que Dios libertó al pueblo hebreo por medio\ndel profeta Moisés, y fueron llevados por Moisés al monte\nSinaí:\n“Jehová habló a Moisés, diciendo:\nDí a los hijos de Israel que tomen para mí ofrenda...”\nVean, Dios pidiendo que el pueblo dé ofrenda a Dios. Y\nahora, vamos a ver:\n“Dí a los hijos de Israel que tomen para mí ofrenda; de\ntodo varón que la diere de su voluntad, de corazón,\ntomaréis mi ofrenda.”\nO sea, que Dios no obliga a nadie; y si una persona va a\nsentirse obligado o a que lo estén obligando para ofrendar a\nDios, no debe hacerlo, porque esa no es una ofrenda que\nagrada a Dios. Una ofrenda que agrada a Dios, es de todo\ncorazón, porque Dios ama ¿a quién? Al dador alegre, al que\nofrenda de buena voluntad para Dios, el que se alegra en\nofrendar para Dios, porque por más que ofrendemos para\nDios, todavía estamos ofrendándole a Dios"
+        },
+        {
+          "posicion": 6,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.60078073,
+          "pasaje_id": "08b2f91d-248e-5902-ba27-775f5d471e51",
+          "conferencia_id": "d6caa207-3f51-4c4e-960d-44528e76ca9a",
+          "documento_id": "dfa17941-6680-443f-83ce-52aa1901660d",
+          "titulo": "La Consolacion de Sion.",
+          "pagina_inicio": 13,
+          "pagina_fin": 14,
+          "texto": "ha\ndado, como hizo o como le aconteció a Esaú, y perder esa\nbendición. ¿Y quién la va a recibir? Pues la recibe uno que\ntenga esa bendición; o sea, le será dada, como en la parábola\nde los talentos: le fue dado el talento al que más tenía.\nAlgunas personas dicen: “Bueno, pero…se le debe dar al\nque menos tiene”. Bueno, se le dio al que menos tenía, y no\n\nDR. WILLIAM SOTO SANTIAGO\n\nhizo nada. Aunque al principio ninguno tenía nada; a uno le\ndieron cinco, a otro tres o dos, y así por el estilo; y a unos le\ndieron un talento. No importa lo grande o lo pequeño que Dios\nle dé a la persona, Dios le pedirá cuenta. Y todos tenemos que\ndecir como dijo aquel hombre: “Nosotros sabemos que Él es\nun Dios que cosecha donde no sembró”. Así que, Él pide cuenta\na toda persona. Todo ser humano le dará cuenta por los talentos\nque posee, y el uso que le ha dado a esos talentos. Toda persona\nque posee un talento está llamada a utilizarlo en el Reino de\nDios.\nPero encontramos que la mayor parte de los seres humanos\nlo utilizan para su propio beneficio, y se olvidan de Dios; y les\npasará como al hombre que tenía un talento, y no lo utilizó\ncorrectamente.\nYa ustedes verán… ya veremos, falta tiempo, pero veremos\nalgún día, después del Milenio, cómo cada persona dará cuenta\na Dios. Y estaremos allí, y"
+        },
+        {
+          "posicion": 7,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.58900553,
+          "pasaje_id": "bb3662ff-3c1c-5e32-bfb4-dea9783be3da",
+          "conferencia_id": "3fb1ecb5-ec90-4862-946e-b6b34c9576d3",
+          "documento_id": "b48e261d-323b-4455-92ce-50b525ab9467",
+          "titulo": "3 Saludo a los Valientes del Hijo de David.",
+          "pagina_inicio": 6,
+          "pagina_fin": 6,
+          "texto": "recompensar a cada uno según sea su obra, ¿por qué? Porque\nel obrero es digno de su salario.\nAhora, esas serán grandes bendiciones las que El nos dará,\ncuando El lleve a cabo el juicio y repartición de los\ngalardones. Lo que usted será en el Reino Milenial, además de\ntener Vida Eterna en un cuerpo eterno allá en el Reino\nMilenial, luego la posición que ocupará allá será de acuerdo a\nla posición que haya ocupado en el Cuerpo Místico de Cristo,\ny de acuerdo a lo que haya trabajado en el Cuerpo Místico de\nCristo.\nNo le van a dar la mejor parte o un buen galardón mayor, a\nuno que no hizo nada; tiene que ser a los más que han\ntrabajado con Amor Divino, pues Dios le dará mayores\ngalardones.\n¿Recuerdan a la parábola de los talentos? Que los que\ntrabajaron - el que trabajó con cinco talentos, ganó cinco más y\ntuvo diez, y los entregó a Cristo. El que trabajó con tres\ntalentos que Cristo le dio, ganó tres en adición y se los entregó\na Cristo. Y luego, el que recibió uno, no trabajó nada, más bien\nse dedicó a trabajar con las cosas terrenales y no con lo\ncelestial, no con lo que Dios le había dado, y enterró el talento.\nY cuando vino su señor y pidió cuenta de los talentos, a los\nque le había repartido los talentos: el que recibió cinco y gano\ncinco, le dijo: “Cinco talentos me diste"
+        },
+        {
+          "posicion": 8,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.58594108,
+          "pasaje_id": "f4004c76-ca54-5bfa-8730-4a9192ff9c89",
+          "conferencia_id": "2be0fc85-ccc0-4fbf-ba52-14ffd0594bae",
+          "documento_id": "035109c8-39d7-4563-9084-173caff66438",
+          "titulo": "Dios prueba a su pueblo para bendecirlo. sencillo",
+          "pagina_inicio": 21,
+          "pagina_fin": 21,
+          "texto": "pagará, El dará la recompensa, el galardón\ncorrespondiente a cada persona. El mismo se encargará de darle\na cada uno de ustedes el galardón que les corresponde.\nY yo deseo para las personas de este tiempo final, creyentes\nJesucristo como nuestro Salvador, las bendiciones, los galardones\nmás grandes que El estará repartiendo, El los repartirá. Y para las\npersonas de este tiempo yo deseo los galardones más grandes; y los\npodemos obtener. Por lo tanto sirvamos a Cristo con toda nuestra\nalma, y trabajemos en Su Obra de todo corazón; que no nos tengan\nque obligar; porque cuando las cosas se hacen porque lo obligan a\nusted, eso no tiene ningún premio, ningún galardón de parte de\nCristo, usted ha trabajado pero como siervo, y el siervo no tiene\nningún derecho a reclamar nada. Como un siervo es tomado usted,\nsi trabaja porque lo obligan a trabajar; pero cuando usted lo hace\nde buena voluntad, y dice: “yo quiero trabajar en la Obra de Cristo\n¿Qué puedo hacer? ¿Para que soy bueno?” Y comienza a trabajar\nen todo lo que hay para trabajar, Cristo recibe esa labor, como una\nlabor de acción de gracias para Cristo, y de amor de usted hacia\nCristo, y de agradecimiento de usted hacia Cristo por lo que El ha\nhecho por usted.\nEsa es la forma en que todos debemos trabajar en el Reino de\nlos cielos: trabajar de buena voluntad, con gozo, conscientes de\nque es un privilegio grande trabajar en Su Obra"
+        },
+        {
+          "posicion": 9,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.57771206,
+          "pasaje_id": "d8a1c9e4-a10d-5fc0-9c81-d64768812746",
+          "conferencia_id": "ef8c41bd-4986-4a90-97cb-76409b5c2834",
+          "documento_id": "a903caf7-1f4e-4f8b-9dbe-5c9c15cb02a8",
+          "titulo": "Rm Preguntas y Respuestas en Reunion de Pastores Venezuela",
+          "pagina_inicio": 12,
+          "pagina_fin": 13,
+          "texto": "eso ya le\ncorresponde al pastor. Entonces, yo, pues personalmente, yo tengo\nla mía aparte, y cuando llega el momento de…, semanalmente,\ntambién yo ofrendo, saco mi ofrenda y la doy a la iglesia; luego,\ncuando llega el fin de mes, y por ejemplo, hay doscientos dólares de\nfondo para los gastos de ese mes, y los gastos son como quinientos\n[dólares], entonces, yo estoy responsabilizado a hacer algo, porque\nyo no voy a estar todos los meses diciéndole a la iglesia: “Falta\ntanto, y falta tanto y hay que completar”, sino que entonces de lo\nque yo recibo, entonces al recibirlo, lo tomé, saqué mis diezmos de\nlos diezmos, y lo voy almacenando para hacer como debo hacer: a\nalguien, a algún compañero ministro, ponerlo en las manos de él.\n22. Luego, de lo que yo recibí, entonces yo ofrendo la cantidad\nque yo sienta en mi corazón; y si en ese mes faltan doscientos\no trescientos dólares, y a mí me entra una cantidad que yo\npueda cubrir esa cantidad que falta, pues yo tomo de lo que me\nHechos 20:35\n\nPreguntas y Respuestas en Reunión de Pastores\nproveyó el Señor a mí, entonces yo ofrendo la cantidad que sea:\nsi son cien, doscientos dólares o trescientos; y si el Señor me lo\nproveyó en esa semana o me los ha proveído durante en el mes,\ny lo tengo guardado en el banco, entonces de ahí yo saco esa\ncantidad y completo el pagaré del local; porque"
+        },
+        {
+          "posicion": 10,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.57745481,
+          "pasaje_id": "ceeb1ef7-30a5-507e-b6f7-a53c737c2ceb",
+          "conferencia_id": "d99df8bf-a39d-4910-bf23-53de06c1046f",
+          "documento_id": "ced27116-2d3d-48ee-b45b-d27826131ab5",
+          "titulo": "El Proposito de las Señales.",
+          "pagina_inicio": 8,
+          "pagina_fin": 9,
+          "texto": "tres, a\notros da cinco, a otros da diez, de acuerdo a los talentos, y\nde acuerdo a eso es la inversión que hacen en el Reino de\nDios, lo ponen a trabajar en la Obra del Señor. Lo que Dios\nles ha dado por bendición lo usan en la Obra del Señor y\nvienen a ser socios de Dios en el programa de Dios, y así\nalmacenanos tesoros en el Reino de los Cielos, porque así\nes como los socios almacenan tesoros cuando tienen un\nnegocio y son socios, pero el socio mayoritario, ¿quién es?\nDios. Por eso es el que tiene la Palabra de decisión para\ntodo Su Programa.\nY ahora, veamos aquí el caso de Gedeón, dice:\n“Jehová le dijo: Ciertamente yo estaré contigo (esa es la\ngarantía más grande que un enviado de Dios puede tener:\nque Dios esté con él, porque cuando Dios envía a alguien,\nDios va con él y va en él), y derrotarás a los madianitas\ncomo a un solo hombre (o sea, que luchará con los\nmadianitas como si estuviera peleando contra un solo\n\nEL PROPÓSITO DE LAS SEÑALES\nhombre, y Gedeón era un hombre fuerte).\nY él respondió: Yo te ruego que si he hallado gracia\ndelante de ti, me des señal de que tú has hablado conmigo.\nTe ruego que no te vayas de aquí hasta que vuelva a ti, y\nsaque mi ofrenda y la ponga delante de ti.”\nRecuerden que siempre ofrecían la ofrenda a Dios,\nofrecían"
+        }
+      ],
+      "nuevas_en_top10": 9
+    },
+    {
+      "consulta": "¿Qué requisito concede autoridad sobre la creación antes de la actuación profética descrita para los dos testigos?",
+      "top10": [
+        {
+          "posicion": 1,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.5289349,
+          "pasaje_id": "65e7ac94-500d-5493-be92-47b202dc38ee",
+          "conferencia_id": "39f63377-f706-419e-95a1-be9de56e244a",
+          "documento_id": "d72cfb0c-b8e3-4f24-9a7d-d5b4934c2f8f",
+          "titulo": "1 El Elegido para edificar la Casa de Dios.",
+          "pagina_inicio": 9,
+          "pagina_fin": 10,
+          "texto": "arca pondrás el testimonio\nque yo te daré.\nY de allí me declararé a ti, y hablaré contigo de sobre el\npropiciatorio, de entre los dos querubines que están sobre el\narca del testimonio, todo lo que yo te mandare para los hijos de\nIsrael.”\nAhí podemos ver cómo sería la Presencia de Dios allí en ese\ntemplo y dónde estaría la Presencia de Dios, y todo esto tiene\nque estar en un Templo, y ya no está el que construyó el Profeta\nMoisés ni tampoco está el que construyó el rey Salomón; pero\ntiene que haber un Templo aquí en el planeta Tierra en donde\nDios esté y desde donde Dios se manifieste y desde donde venga\n\nWILLIAM SOTO SANTIAGO\nel Mensaje para el pueblo hebreo. Por lo tanto ese Templo tiene\nque tener todo lo que tenía el tabernáculo que construyó el rey\nSalomón y el tabernáculo que construyó el Profeta Moisés. El\napóstol San Pablo nos dice que las cosas que estaban en aquel\ntemplo que construyó el Profeta Moisés eran la sombra de los\nbienes venideros.\nY ahora, veamos un poco más acerca de este templo, porque si\notro templo es construido tiene que guardar todos los detalles\ndel diseño del tabernáculo que construyó el rey Salomón y\ntambién del tabernáculo que construyó el Profeta Moisés. Dice\nen Levítico, capítulo 16, verso 1 en adelante (1 al 3), dice:\n“Habló Jehová a Moisés después de la muerte de los dos\nhijos de Aarón, cuando se acercaron"
+        },
+        {
+          "posicion": 2,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.52750909,
+          "pasaje_id": "3a3729b9-3151-56dd-90b5-bf82cba3c99f",
+          "conferencia_id": "11a76d64-16be-4da9-8767-884990dea844",
+          "documento_id": "3270c7ad-9170-46f2-8949-fb87fd25cd77",
+          "titulo": "La Espada del Rey de Reyes y Señor de Señores.",
+          "pagina_inicio": 16,
+          "pagina_fin": 17,
+          "texto": "la Palabra creadora:\nha estado en la boca de los diferentes mensajeros, de los\ndiferentes profetas que Dios ha enviado; en ellos ha estado\nel Espíritu Santo; y por consiguiente, la Palabra creadora\nha estado en el Espíritu Santo siendo hablada a través de\nSus mensajeros.\n\nTener ese conocimiento es importante, pero no nos\npodemos detener ahí. Tenemos que ver en dónde está\nprometido que estará la Espada del Rey. Conforme a lo\nque hemos visto, las profecías dicen que los Dos Olivos\ntendrán poder para cerrar los cielos, para hablar plagas a\nexistencia, o lo que quieran hablar.\n\nLa Espada del Rey de reyes y Señor de señores\n\nPor lo tanto, la Palabra de Dios creadora estará en su\nboca, en la boca de Moisés y Elías; y por consiguiente, la\nEspada del Rey ahí estará en el Día Postrero.\n\nPara encontrar la Espada del Rey, pues buscamos\npara encontrar dónde estará la Palabra de Dios para este\ntiempo; y por consiguiente estaremos buscando donde fue\nprometido.\n\nPor lo tanto, estaremos buscando los ministerios\nde Moisés y Elías, los ministerios de los Dos Olivos,\npara encontrar la Palabra creadora de Dios, la Espada\nde dos filos siendo hablada en este tiempo final, para\ntraer a existencia tanto las bendiciones como los juicios\ndivinos; para dar a conocer, para hablar, las cosas\nque deben suceder pronto, tanto los juicios como las\nbendiciones.\n\nY entonces, cuando veamos esa Espada de dos filos,\nla Palabra creadora de Dios siendo hablada, diremos:\n“Estamos"
+        },
+        {
+          "posicion": 3,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.52721494,
+          "pasaje_id": "090b73fa-4f25-5e77-895a-66ab8f2a966c",
+          "conferencia_id": "3d87f504-fb55-4ad3-9723-b2a74048dc7a",
+          "documento_id": "e5e2a790-5544-46ac-9820-904d7c6c0aa1",
+          "titulo": "El Plano del Templo espiritual de Jesucristo.",
+          "pagina_inicio": 5,
+          "pagina_fin": 5,
+          "texto": "Y harás un propiciatorio de oro fino, cuya longitud será de\ndos codos y medio, y su anchura de codo y medio.\nHarás también dos querubines de oro; labrados a martillo los\nharás en los dos extremos del propiciatorio.\nHarás, pues, un querubín en un extremo, y un querubín en el\notro extremo; de una pieza con el propiciatorio harás los\nquerubines en sus dos extremos.\nY los querubines extenderán por encima las alas, cubriendo\ncon sus alas el propiciatorio; sus rostros el uno enfrente del otro,\nmirando al propiciatorio los rostros de los querubines.\nY pondrás el propiciatorio encima del arca, y en el arca\npondrás el testimonio que yo te daré.\nY de allí me declararé a ti, y hablaré contigo de sobre el\npropiciatorio, de entre los dos querubines que están sobre el arca\ndel testimonio, todo lo que yo te mandare para los hijos de\nIsrael.”\nY ahora, encontramos que Dios le mostró a Moisés el diseño\ndel templo o tabernáculo o santuario, que Dios le ordenó a\nMoisés construir; también podemos ver que todo lo que está ahí\nes tipo y figura de lo que está en el Cielo, de esto habla San Pablo\nen Hebreos, capítulo 9, verso 16 al 24, donde dice:\n“Porque donde hay testamento, es necesario que intervenga\nmuerte del testador.\nPorque el testamento con la muerte se confirma; pues no es\nválido entre tanto que el testador vive.\nDe donde ni aun el primer pacto fue instituido sin sangre.\nPorque"
+        },
+        {
+          "posicion": 4,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.52541208,
+          "pasaje_id": "b53642b4-d844-5d8f-9d80-4379cd8c97ff",
+          "conferencia_id": "ccf6d897-56bd-4789-b9c6-28ef397302ed",
+          "documento_id": "2330a5f2-4957-4a10-90ac-891a027c6356",
+          "titulo": "Lo Escrito Cumplimiento Tiene",
+          "pagina_inicio": 5,
+          "pagina_fin": 6,
+          "texto": "hacer algo, tiene que\nhaber un hombre a través del cual Dios lo va a hacer.\n9.\nY también encontramos... los profetas del Antiguo\nTestamento sabían eso también, y uno de ellos dijo1:\n“Porque no hará nada Jehová el Señor, sin que\nrevele su secreto a sus siervos los profetas.”\n10. Por lo tanto, antes de Dios hacer algo, tiene que\nhaber un profeta al cual Dios le revelará eso, y entonces\nese profeta lo hablará y entonces se cumplirá. ¿Por qué?\nPorque primero todos los pensamientos que Dios tiene,\ntodos esos pensamientos son los atributos de Dios, y\nesos pensamientos que Él tiene de las cosas que Él va a\nhacer, todo eso Él lo va a hacer; pero antes de hacerlo,\nel atributo, el pensamiento no se puede materializar, a\nmenos que primero no se manifieste, no pase.\n11. Porque hay un proceso, hay un proceso, podríamos\nllamar: el proceso para Dios hacer las cosas. Lo primero\nAmós 3:7\n\nDr. William Soto Santiago\nde las cosas que Dios ha hecho, y de las que Dios está\nhaciendo, y de las que Dios hará, tienen un proceso:\nprimero son un pensamiento en la mente de Dios, son un\natributo. Luego de eso... ese es el primer estado en que se\nencuentra lo que Dios va a hacer: en forma de pensamiento\nen la mente de Dios, un atributo, es llamado un atributo.\n12. Luego la segunda etapa (y Dios se perfecciona en tres),\nla segunda etapa viene a"
+        },
+        {
+          "posicion": 5,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.52052516,
+          "pasaje_id": "b5df773e-d2f5-5d07-8618-8eaf66faf6a1",
+          "conferencia_id": "71a314fd-5d4d-41a8-89c6-87f98ecdc2db",
+          "documento_id": "7408e30c-b1cf-4413-94f1-81060aaa9787",
+          "titulo": "RM La trayectoria de la Palabra Creadora.",
+          "pagina_inicio": 8,
+          "pagina_fin": 8,
+          "texto": "de\nJesucristo, cada persona en su edad, naciendo en el Reino\nde Dios.\n\nPor lo tanto, esa Palabra creadora, que es poderosa y\nmás penetrante que toda espada de dos filos, es la que ha\ntenido la misión de la creación de todas las cosas; porque\nes la Voz de Dios, la Palabra de Dios creadora siendo\nhablada, para traer a existencia las cosas que Dios pensó\nrealizar en cada edad o en cada dispensación.\n\nA través de los diferentes tiempos, edades y\ndispensaciones, encontramos profecías para ser cumplidas\nen otro tiempo, del tiempo en que fueron habladas por el\nEspíritu de Dios a través de un profeta.\n\nPero ha aparecido, en el tiempo en que tiene que ser\ncumplida esa Palabra, ha aparecido un mensajero al cual\nha venido la Palabra revelada; él ha tomado esa Palabra,\nha tomado esas promesas, las ha hablado y ha dicho: “Eso\nes para este tiempo”.\n\n¿Y qué ha comenzado a suceder? Ese mensajero, con\nsu grupo, ha comenzado a trabajar en pro del cumplimiento\nde esa promesa. Y cuando se ha hecho realidad lo que\nestaba prometido, ¿qué sucedió? Lo que dice San Pablo:\n“Siendo imitadores de aquellos que por la fe obtuvieron la\npromesa, alcanzaron la promesa”4.\n\nEsas personas que por la fe, creyendo lo que Dios\ndijo para ese tiempo, obtuvieron el cumplimiento de\nesa promesa: trabajaron en todas las cosas que tenían\nque hacerse para que se cumpliera esa promesa, porque\ncreyeron de todo corazón lo que Dios"
+        },
+        {
+          "posicion": 6,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.52046889,
+          "pasaje_id": "e84e82a0-2e98-5d65-94e4-8d31c937b7a7",
+          "conferencia_id": "11a76d64-16be-4da9-8767-884990dea844",
+          "documento_id": "3270c7ad-9170-46f2-8949-fb87fd25cd77",
+          "titulo": "La Espada del Rey de Reyes y Señor de Señores.",
+          "pagina_inicio": 15,
+          "pagina_fin": 16,
+          "texto": "cuando Elías\n7 64-0823M “Preguntas y Respuestas #1”, párrs. 186, 197-198\n\nDr. William Soto Santiago\ny Moisés… Allí es donde los milagros tienen lugar. Las\ncosas que la gente ha estado buscando, los pentecostales,\npor milagros, pero donde eso tendrá lugar será bajo Elías\ny Moisés”.\n\nY ahora, conforme a estas palabras y las que leímos\nanteriormente, ¿quién o quiénes tendrán el poder divino?\nLos Dos Olivos, Moisés y Elías, tendrán la Palabra\ncreadora en su boca, para hablar y las cosas acontecer, por\nel poder creador de la Palabra creadora de Dios.\n\n¿A quién pasaría la Espada de dos filos? A los Dos\nOlivos. No hay discusión en eso. El libro del Apocalipsis,\nen el capítulo 11, declara que ellos tendrán el poder para\ncerrar el cielo, tendrán poder para hablar a existencia\nlas plagas apocalípticas; por lo tanto, tendrán la Palabra\ncreadora en su boca, y, por consiguiente, la Espada de dos\nfilos, la Espada del Rey, saliendo de su boca.\n\nHemos visto en esta noche nuestro tema: “LA ESPADA\nDEL REY DE REYES Y SEÑOR DE SEÑORES”.\n\nY ahora, a través de la historia del Antiguo Testamento\ny del Nuevo Testamento hemos visto en quién ha estado\nla Espada del Rey, la Palabra de Dios, la Palabra creadora:\nha estado en la boca de los diferentes mensajeros, de los\ndiferentes profetas que Dios ha enviado; en ellos ha estado\nel Espíritu Santo; y por consiguiente, la Palabra creadora\nha estado en el Espíritu Santo siendo"
+        },
+        {
+          "posicion": 7,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.51630867,
+          "pasaje_id": "62b976cc-ef56-5270-86aa-1c7ac770872f",
+          "conferencia_id": "71a314fd-5d4d-41a8-89c6-87f98ecdc2db",
+          "documento_id": "7408e30c-b1cf-4413-94f1-81060aaa9787",
+          "titulo": "RM La trayectoria de la Palabra Creadora.",
+          "pagina_inicio": 14,
+          "pagina_fin": 15,
+          "texto": "esas promesas,\npor la fe, creyéndolas; él las tomará (todas esas promesas),\ny Dios hará que sean una realidad bajo el ministerio de ese\nmensajero dispensacional.\n\nEl reverendo William Branham dijo que los grandes\nmilagros y maravillas, mundiales o internacionales,\nserán para Moisés y Elías15; por lo tanto, el ministerio\ncorrespondiente al cumplimiento de la Visión de la Carpa\ncorresponde a los Dos Olivos, a Moisés y Elías, a los Dos\nUngidos que están delante de la presencia de Dios.\n13 Citas, pág. 39, párr. 321: 56-0219 “Siendo guiados por el Espíritu\nSanto”, párrs. 4-5, 16, 20-26\n14 Citas, pág. 120, párr. 1068: 64-0120 “Sus palabras infalibles de\npromesa”, párr. 138\n15 Citas, pág. 136, párr. 1208: 64-0823M “Preguntas y Respuestas #1”,\npárrs. 186, 197-198\n\nLa trayectoria de la Palabra creadora\n\nCualquier otra persona tratará de que Dios cumpla esa\npromesa, pero solamente la cumplirá bajo el ministerio de\nlos Dos Olivos.\n\nY por cuanto fue visto todo eso siendo manifestado en\nmedio de la Iglesia, en medio del cristianismo se verá esa\nmanifestación; ahí estará Cristo visitando a Su Iglesia. Y\nlos judíos verán esa manifestación y dirán: “Esto es lo que\nnosotros estamos esperando”16.\n\nPara este tiempo final habrá un mensajero y un grupo\nde creyentes en la Palabra creadora de Dios, que estarán\ntrabajando en favor de lo que Dios prometió para que se\nhaga una realidad.\n\nOtros dirán: “Yo no trabajaré en eso”, o no están\ntrabajando en eso"
+        },
+        {
+          "posicion": 8,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.51334977,
+          "pasaje_id": "dbbc07ed-3d60-55f5-9476-5ffee27011c5",
+          "conferencia_id": "38f7a6ef-3c23-4cd5-8202-5c683d9fe4f9",
+          "documento_id": "19ef8460-a1ea-4f1c-9e5a-2bc301390bd6",
+          "titulo": "El Bautismo del Espíritu Santo",
+          "pagina_inicio": 10,
+          "pagina_fin": 11,
+          "texto": "ustedes, con todo y eso, Moisés todavía entraba al\nLugar Santísimo y veía allí la Gloria de Dios en medio de los dos\nquerubines de oro.\nDice el libro del Exodo, capítulo 25, versos 21 en adelante,\ndice:\n“Y pondrás el propiciatorio encima del arca, y en el arca\npondrás el testimonio que yo te daré.\nY de allí me declararé a ti, y hablaré contigo de sobre el\npropiciatorio, de entre los dos querubines que están sobre el\narca del testimonio, todo lo que yo te mandare para los hijos de\n\nEL BAUTISMO DEL ESPÍRITU SANTO\nIsrael.”\nAhora, vean cómo Dios le dice a Moisés que de entre los dos\nquerubines de oro que están sobre el propiciatorio, de allí, de en\nmedio de los dos querubines de oro, Dios se declarará a Moisés,\ny le revelará todo lo que Moisés tiene que hablarle al pueblo\nhebreo.\nEl ministerio de Moisés, vean ustedes, era un ministerio que\nentraba y ministraba en el Lugar Santísimo, fue el que edificó el\ntemplo a Dios, fue el que tomó la sangre de los becerros, y\nmachos cabríos, y los llevó al Lugar Santísimo, y esparció con su\ndedo siete veces sobre el propiciatorio, fue el que también\nesparció sobre los utensilios del tabernáculo y sobre el mismo\ntabernáculo, cuando él realizó esa labor que Dios le ordenó\nrealizar para la expiación del templo, del tabernáculo, y de todas\nlas cosas que estaban allí, y para la expiación también del\npueblo.\nAhora, vean"
+        },
+        {
+          "posicion": 9,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.51314771,
+          "pasaje_id": "92b33d3a-6280-535b-9ce0-4ee79fedfcd9",
+          "conferencia_id": "003a0ddc-f636-45ca-8187-d1b2855de92a",
+          "documento_id": "6ec8ba7b-d534-4031-b6f1-dc3bf6ea5030",
+          "titulo": "El encuentro de Jacob con el Angel de Jehova.",
+          "pagina_inicio": 7,
+          "pagina_fin": 7,
+          "texto": "coloca Su Palabra creadora, en la\nboca de sus Profetas, por eso podemos ver a través de la historia\nbíblica que Profetas de Dios trajeron plagas sobre la Tierra\ncomo lo hizo Moisés sobre el imperio del faraón, y también el\nProfeta Josué mandó a parar el sol y la luna, y se pararon,\nporque para esa Palabra creadora no hay nada imposible, por esa\nPalabra creadora fueron hechas todas las cosas y es la que\nsustenta todas las cosas.\nPor lo tanto, puede ordenar a la creación que haga tal cosa, y\nes hecha, Cristo le dijo a la higuera: “Nunca más nazca fruto de\nti ni coma nadie más fruto de ti,” y la higuera se secó de sus\nraíces hacia arriba.\nSus discípulos le preguntan a Jesús o le dicen a Jesús: “Mira\nla higuera, la que maldijiste, se secó.” Y Cristo les dijo: “Si\ntuviereis fe como un grano de mostaza, diréis a este monte:\npásate de aquí allá y se pasará, y nada será imposible.” O sea,\nque no solo lo de la higuera, sino que no hay nada imposible\npara los que tienen fe, y fe es revelación.\nCristo está hablando ahí del poder de la Palabra creadora\nsiendo hablada por un hombre, por un Profeta, lo cual Él mostró\nen Su ministerio terrenal en Su primera Venida, era el Verbo\nhecho carne manifestando la Palabra creadora, y esa Palabra\ncreadora materializándose en lo que era dicho.\nParcialmente los Profetas de Dios habían sido"
+        },
+        {
+          "posicion": 10,
+          "origen": "NUEVAS_960",
+          "puntuacion": 0.50845939,
+          "pasaje_id": "da908b75-225b-58ae-9e0a-94d903aae0cd",
+          "conferencia_id": "be3a62f1-1a63-45f9-a868-20db3786f7e6",
+          "documento_id": "73fad430-f3cc-42e7-8479-53b8f0751791",
+          "titulo": "RM La Palabra profética es la Luz del Día Postrero.",
+          "pagina_inicio": 9,
+          "pagina_fin": 10,
+          "texto": "yo tengo mayor testimonio que el de Juan; porque\nlas obras que el Padre me dio para que cumpliese, las\nmismas obras que yo hago, dan testimonio de mí, que el\nPadre me ha enviado”.\n\nY ahora vean, el testimonio de que Juan era el\nprecursor y de que Jesús era el precursado, era la labor,\nlas obras que estaban siendo hechas (que Dios había\nprometido), las cuales a través de Juan como precursor\nfueron cumplidas, y a través de Jesús como precursado\nfueron cumplidas las correspondientes al precursado, al\nMesías.\n\nY así ha sido en cada tiempo. Las obras, por ejemplo,\nde Moisés, dieron testimonio que Moisés era el mensajero\na través del cual Dios cumpliría la promesa de la liberación\nde Israel. La liberación de Israel dio testimonio de que\nMoisés era el hombre, de que en Moisés estaba la Palabra\nprometida siendo hecha una realidad. Ese es el orden\nde Dios: Dios no obra sino a través de seres humanos,\nde mensajeros. “Porque no hará nada el Señor, sin que\n\nDr. William Soto Santiago\nantes revele Sus secretos a Sus siervos Sus profetas”, dice\nAmós, capítulo 3, verso 7.\n\nY ahora, hemos visto también a través de la historia\nde la Iglesia, a través de las siete edades, que la Palabra\nvindicada para cada edad, o sea, cumplida, hecha realidad\npara cada edad, ha sido en el mensajero que Dios envió\npara cada edad; y luego el pueblo que la recibió, viene\ntambién en él a cumplirse"
+        }
+      ],
+      "nuevas_en_top10": 10
+    }
+  ]
+}

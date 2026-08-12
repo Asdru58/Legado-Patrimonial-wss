@@ -80,3 +80,16 @@ src/proxy.ts
 
 # Reportes locales de auditoria del catalogo
 /scripts/auditoria_catalogo/reportes/
+
+# Expansion local BGE-M3: binarios y temporales fuera de Git
+*.npy
+**/__pycache__/
+*.pyc
+/artifacts/expansion_corpus_1000/procesamiento_local_960_v1/checkpoints/
+/artifacts/expansion_corpus_1000/procesamiento_local_960_v1/logs/
+/artifacts/expansion_corpus_1000/procesamiento_local_960_v1/pasajes_por_conferencia/
+/artifacts/expansion_corpus_1000/procesamiento_local_960_v1/textos_brutos/
+/artifacts/expansion_corpus_1000/procesamiento_local_960_v1/textos_normalizados/
+/PILOTO_BGE_M3_LOCAL/.venv/
+/PILOTO_BGE_M3_LOCAL/.conda_pkgs/
+/PILOTO_BGE_M3_LOCAL/cache_huggingface/
