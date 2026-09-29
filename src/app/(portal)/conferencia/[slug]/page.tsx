@@ -140,6 +140,7 @@ export default async function ConferenciaPage({
           query,
           passageId,
           conferenceId: conferencia.id,
+          conferenceDate: conferencia.fecha_impartida,
         })
       : null
 

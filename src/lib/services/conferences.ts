@@ -22,6 +22,38 @@ export type ArchivoSortOrder = 'reciente' | 'antiguo' | 'titulo'
 
 export type SearchMode = 'exact' | 'semantic' | 'lexical'
 
+/** Orden de la modalidad Exacta. Lo resuelve la RPC `buscar_corpus_exacta_v2`. */
+export type ExactOrder = 'antiguos' | 'recientes' | 'relevancia'
+
+export const EXACT_ORDERS: readonly ExactOrder[] = ['antiguos', 'recientes', 'relevancia']
+
+/**
+ * Filtros de la modalidad Exacta. Los años se validan antes de llegar aquí;
+ * la RPC los vuelve a validar y rechaza lo que quede fuera de 1974-2018.
+ */
+export type ExactSearchFilters = {
+  anioDesde: number | null
+  anioHasta: number | null
+  orden: ExactOrder
+  /**
+   * Huella del corpus que devolvió la primera página. Si al pedir otra página
+   * el corpus ha cambiado, la RPC se niega y la búsqueda debe reiniciarse.
+   */
+  huella: string | null
+}
+
+/**
+ * El corpus cambió entre dos páginas de una misma búsqueda. Seguir paginando
+ * podría repetir o saltarse conferencias, así que la página lo comunica y
+ * ofrece volver a empezar.
+ */
+export class CorpusCambiadoError extends Error {
+  constructor() {
+    super('El corpus cambió durante la navegación.')
+    this.name = 'CorpusCambiadoError'
+  }
+}
+
 export type ArchivoSearchParams = {
   /** Término de búsqueda FTS (opcional) */
   query: string | null
@@ -36,6 +68,8 @@ export type ArchivoSearchParams = {
   format: string | null
   /** Filtro por año: '2024', '1998-2005', '1990s' */
   year: string | null
+  /** Solo modalidad Exacta: años, orden y huella de la navegación */
+  exactFilters?: ExactSearchFilters
 }
 
 export type SemanticSearchContext = {
@@ -106,6 +140,8 @@ export type ArchivoSearchConference = ConferenciaPublica & {
 export type ArchivoSearchResult = {
   data: ArchivoSearchConference[]
   total: number
+  /** Solo modalidad Exacta: huella del corpus con la que se calculó la página */
+  huella?: string
 }
 
 // ============================================
@@ -558,7 +594,7 @@ async function searchLexicalCorpus(
 }
 
 /**
- * Tipo de retorno de la RPC buscar_corpus_exacta.
+ * Tipo de retorno de la RPC buscar_corpus_exacta_v2.
  */
 type CorpusExactSearchRow = {
   conferencia_id: string
@@ -572,7 +608,78 @@ type CorpusExactSearchRow = {
   pagina_fin: number
   texto: string
   numero_ocurrencias: number
+  posicion: number | string
   total_count: number | string
+  huella_corpus: string
+}
+
+/** Pista con la que la RPC avisa de que el corpus cambió entre páginas. */
+const HINT_CORPUS_CAMBIADO = 'huella_corpus_cambiada'
+
+/** Tope de páginas que recorre la validación de un pasaje antes de rendirse. */
+const MAX_VALIDATION_PAGES = 10
+
+/**
+ * Busca un pasaje concreto entre los resultados Exactos de una consulta.
+ *
+ * Los resultados van en orden cronológico, así que un pasaje de la página 3 ya
+ * no está entre las primeras cien conferencias. Se acota la búsqueda al año de
+ * la conferencia; las que no tienen fecha van al final, y se empieza a leer
+ * justo donde terminan las fechadas.
+ */
+async function findExactRow(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  params: { query: string; passageId: string; conferenceId: string; year: number | null }
+): Promise<CorpusExactSearchRow | null> {
+  let offset = 0
+  let desde: number | null = params.year
+  let hasta: number | null = params.year
+
+  if (params.year === null) {
+    // Sin fecha: cuántas conferencias fechadas preceden a las que no la tienen.
+    const { data, error } = await supabase.rpc('buscar_corpus_exacta_v2', {
+      consulta: params.query,
+      resultado_limit: 1,
+      resultado_offset: 0,
+      anio_desde: MIN_YEAR,
+      anio_hasta: MAX_YEAR,
+      ordenar_por: 'antiguos',
+    })
+    if (error) {
+      console.error('[getValidatedExactPassage] RPC error:', error)
+      return null
+    }
+    offset = Number(((data ?? []) as CorpusExactSearchRow[])[0]?.total_count ?? 0)
+    desde = null
+    hasta = null
+  }
+
+  for (let pagina = 0; pagina < MAX_VALIDATION_PAGES; pagina++) {
+    const { data, error } = await supabase.rpc('buscar_corpus_exacta_v2', {
+      consulta: params.query,
+      resultado_limit: MAX_LIMIT,
+      resultado_offset: offset,
+      anio_desde: desde,
+      anio_hasta: hasta,
+      ordenar_por: 'antiguos',
+    })
+    if (error) {
+      console.error('[getValidatedExactPassage] RPC error:', error)
+      return null
+    }
+    const rows = (data ?? []) as CorpusExactSearchRow[]
+    const encontrada = rows.find(
+      (candidate) =>
+        candidate.pasaje_id === params.passageId &&
+        candidate.conferencia_id === params.conferenceId
+    )
+    if (encontrada) return encontrada
+    if (rows.length === 0) return null
+    offset += MAX_LIMIT
+    if (offset >= Number(rows[0].total_count)) return null
+  }
+
+  return null
 }
 
 /**
@@ -586,6 +693,8 @@ export async function getValidatedExactPassage(
     query: string
     passageId: string
     conferenceId: string
+    /** Fecha de la conferencia abierta (AAAA-MM-DD) o null si no la tiene */
+    conferenceDate: string | null
   }>
 ): Promise<ValidatedExactPassage | null> {
   const query = params.query.trim()
@@ -599,23 +708,14 @@ export async function getValidatedExactPassage(
     return null
   }
 
+  const year = params.conferenceDate ? Number(params.conferenceDate.slice(0, 4)) : null
   const supabase = await createClient()
-  const { data: rawRows, error } = await supabase.rpc('buscar_corpus_exacta', {
-    consulta: query,
-    resultado_limit: MAX_LIMIT,
-    resultado_offset: 0,
+  const row = await findExactRow(supabase, {
+    query,
+    passageId: params.passageId,
+    conferenceId: params.conferenceId,
+    year: year !== null && Number.isInteger(year) && year >= MIN_YEAR && year <= MAX_YEAR ? year : null,
   })
-
-  if (error) {
-    console.error('[getValidatedExactPassage] RPC error:', error)
-    return null
-  }
-
-  const row = ((rawRows ?? []) as CorpusExactSearchRow[]).find(
-    (candidate) =>
-      candidate.pasaje_id === params.passageId &&
-      candidate.conferencia_id === params.conferenceId
-  )
 
   if (
     !row ||
@@ -646,17 +746,25 @@ async function searchExactCorpus(
     query: string
     page: number
     limit: number
+    filters: ExactSearchFilters
   }
 ): Promise<ArchivoSearchResult> {
   const supabase = await createClient()
 
-  const { data: rawRows, error } = await supabase.rpc('buscar_corpus_exacta', {
+  const { data: rawRows, error } = await supabase.rpc('buscar_corpus_exacta_v2', {
     consulta: params.query,
     resultado_limit: params.limit,
     resultado_offset: (params.page - 1) * params.limit,
+    anio_desde: params.filters.anioDesde,
+    anio_hasta: params.filters.anioHasta,
+    ordenar_por: params.filters.orden,
+    huella_esperada: params.filters.huella,
   })
 
   if (error) {
+    if (error.hint === HINT_CORPUS_CAMBIADO) {
+      throw new CorpusCambiadoError()
+    }
     console.error('[searchExactCorpus] RPC error:', error)
     throw new Error('Error al buscar en el archivo de conferencias.')
   }
@@ -751,7 +859,7 @@ async function searchExactCorpus(
     }
   })
 
-  return { data, total }
+  return { data, total, huella: rows[0].huella_corpus }
 }
 
 // ============================================
@@ -862,6 +970,7 @@ export async function searchArchivoConferencias(
       query: searchQuery,
       page,
       limit,
+      filters: params.exactFilters ?? { anioDesde: null, anioHasta: null, orden: 'antiguos', huella: null },
     })
   }
 
@@ -891,8 +1000,8 @@ export async function searchArchivoConferencias(
 // ============================================
 
 // ── Rango válido de años en el archivo ──
-const MIN_YEAR = 1974
-const MAX_YEAR = 2018
+export const MIN_YEAR = 1974
+export const MAX_YEAR = 2018
 
 /** Fila devuelta por la RPC `conferencias_por_anio`. */
 type ConteoAnioRpc = {

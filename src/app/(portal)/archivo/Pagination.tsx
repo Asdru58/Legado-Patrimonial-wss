@@ -13,6 +13,11 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 interface PaginationProps {
   currentPage: number
   totalPages: number
+  /**
+   * Parámetros que se fijan al cambiar de página además de los que ya lleva la
+   * URL. La búsqueda Exacta lo usa para arrastrar la huella del corpus.
+   */
+  extraParams?: Record<string, string>
 }
 
 function buildPageNumbers(
@@ -39,7 +44,7 @@ function buildPageNumbers(
   return pages
 }
 
-export function Pagination({ currentPage, totalPages }: PaginationProps) {
+export function Pagination({ currentPage, totalPages, extraParams }: PaginationProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -48,11 +53,14 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
     (page: number) => {
       const params = new URLSearchParams(searchParams.toString())
       params.set('page', String(page))
+      for (const [clave, valor] of Object.entries(extraParams ?? {})) {
+        params.set(clave, valor)
+      }
 
       const qs = params.toString()
       router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: true })
     },
-    [pathname, router, searchParams]
+    [pathname, router, searchParams, extraParams]
   )
 
   if (totalPages <= 1) return null

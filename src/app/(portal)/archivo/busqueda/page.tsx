@@ -9,10 +9,16 @@ import { redirect } from 'next/navigation'
 import {
   searchArchivoConferencias,
   getCoberturaBuscador,
+  CorpusCambiadoError,
+  EXACT_ORDERS,
+  MIN_YEAR,
+  MAX_YEAR,
+  type ExactOrder,
 } from '@/lib/services/conferences'
 import { conSeparadorDeMiles } from '@/lib/format'
 import { ConferenceCard } from '@/components/ui/ConferenceCard'
 import { ExactResultsTree } from '@/components/search/ExactResultsTree'
+import { ExactFilters, describirOrden } from '@/components/search/ExactFilters'
 import { HeroSearch, type PublicSearchMode } from '@/components/hero/HeroSearch'
 import { Pagination } from '@/app/(portal)/archivo/Pagination'
 import { GuardarBusqueda } from '@/components/estudio/GuardarBusqueda'
@@ -23,10 +29,33 @@ type BusquedaPageProps = {
     query?: string
     page?: string
     search_mode?: string | string[]
+    desde?: string | string[]
+    hasta?: string | string[]
+    orden?: string | string[]
+    huella?: string | string[]
   }>
 }
 
 const ITEMS_PER_PAGE = 50
+
+/** Año de la URL: vacío o ausente es «sin límite»; lo que no sea un año válido se rechaza. */
+function leerAnio(valor: string | string[] | undefined): number | null | 'invalido' {
+  if (typeof valor !== 'string' || valor.trim() === '') return null
+  if (!/^\d{4}$/.test(valor.trim())) return 'invalido'
+  const anio = Number(valor)
+  return anio >= MIN_YEAR && anio <= MAX_YEAR ? anio : 'invalido'
+}
+
+function leerOrden(valor: string | string[] | undefined): ExactOrder {
+  return typeof valor === 'string' && (EXACT_ORDERS as readonly string[]).includes(valor)
+    ? (valor as ExactOrder)
+    : 'antiguos'
+}
+
+/** La huella es un md5; cualquier otra cosa se ignora. */
+function leerHuella(valor: string | string[] | undefined): string | null {
+  return typeof valor === 'string' && /^[0-9a-f]{32}$/.test(valor) ? valor : null
+}
 
 /**
  * Techo de resultados navegables en la modalidad Semántica.
@@ -74,6 +103,10 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
     const normalizedParams = new URLSearchParams({ search_mode: 'exact' })
 
     if (hasQuery) normalizedParams.set('query', queryParam)
+    for (const clave of ['desde', 'hasta', 'orden', 'huella'] as const) {
+      const valor = resolvedSearchParams[clave]
+      if (typeof valor === 'string' && valor) normalizedParams.set(clave, valor)
+    }
     if (currentPage > 1) normalizedParams.set('page', String(currentPage))
 
     redirect(`/archivo/busqueda?${normalizedParams.toString()}`)
@@ -82,32 +115,73 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
   const searchMode: PublicSearchMode = searchModeParam
   const searchModeLabel = searchMode === 'exact' ? 'Frase exacta' : 'Tema o enseñanza'
 
+  // ============================================
+  // FILTROS DE LA MODALIDAD EXACTA
+  // Años y orden viajan en la URL, así que la paginación los conserva.
+  // La modalidad semántica los ignora: no cambia en esta etapa.
+  // ============================================
+  const anioDesdeLeido = leerAnio(resolvedSearchParams.desde)
+  const anioHastaLeido = leerAnio(resolvedSearchParams.hasta)
+  const orden = leerOrden(resolvedSearchParams.orden)
+  const huellaParam = leerHuella(resolvedSearchParams.huella)
+  const rangoInvalido =
+    searchMode === 'exact' && hasQuery &&
+    (anioDesdeLeido === 'invalido' ||
+      anioHastaLeido === 'invalido' ||
+      (typeof anioDesdeLeido === 'number' && typeof anioHastaLeido === 'number' && anioDesdeLeido > anioHastaLeido))
+  const anioDesde = typeof anioDesdeLeido === 'number' ? anioDesdeLeido : null
+  const anioHasta = typeof anioHastaLeido === 'number' ? anioHastaLeido : null
+  const hayRango = anioDesde !== null || anioHasta !== null
+
   let failedSearchMode: 'semantic' | null = null
+  let corpusCambiado = false
   let searchResult: Awaited<ReturnType<typeof searchArchivoConferencias>> = {
     data: [],
     total: 0,
   }
 
   try {
-    searchResult = await searchArchivoConferencias({
-      query: hasQuery ? queryParam : null,
-      searchMode,
-      page: currentPage,
-      limit: ITEMS_PER_PAGE,
-      sort: 'reciente',
-      format: null,
-      year: null,
-    })
-  } catch (error) {
-    if (searchMode !== 'semantic') {
-      throw error
+    if (!rangoInvalido) {
+      searchResult = await searchArchivoConferencias({
+        query: hasQuery ? queryParam : null,
+        searchMode,
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        sort: 'reciente',
+        format: null,
+        year: null,
+        exactFilters: { anioDesde, anioHasta, orden, huella: huellaParam },
+      })
     }
-
-    failedSearchMode = searchMode
-    console.error(`[ArchivoBusquedaPage] ${searchMode} search failed:`, error)
+  } catch (error) {
+    if (error instanceof CorpusCambiadoError) {
+      corpusCambiado = true
+    } else if (searchMode !== 'semantic') {
+      throw error
+    } else {
+      failedSearchMode = searchMode
+      console.error(`[ArchivoBusquedaPage] ${searchMode} search failed:`, error)
+    }
   }
 
-  const { data: conferencias, total } = searchResult
+  const { data: conferencias, total, huella } = searchResult
+
+  // Enlace para empezar de nuevo con los mismos filtros y sin huella.
+  const reinicioParams = new URLSearchParams({ search_mode: 'exact', query: queryParam })
+  if (anioDesde !== null) reinicioParams.set('desde', String(anioDesde))
+  if (anioHasta !== null) reinicioParams.set('hasta', String(anioHasta))
+  if (orden !== 'antiguos') reinicioParams.set('orden', orden)
+  const reinicioHref = `/archivo/busqueda?${reinicioParams.toString()}`
+
+  const descripcionRango = !hayRango
+    ? ''
+    : anioDesde !== null && anioHasta !== null
+      ? anioDesde === anioHasta
+        ? ` de ${anioDesde}`
+        : ` entre ${anioDesde} y ${anioHasta}`
+      : anioDesde !== null
+        ? ` desde ${anioDesde}`
+        : ` hasta ${anioHasta}`
 
   // El aviso de cobertura solo se pinta en la modalidad Semántica, así que
   // solo ahí se paga la consulta.
@@ -125,7 +199,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
   // 2) Búsqueda con término pero sin resultados
   // 3) Búsqueda con resultados
   const isIdle = !hasQuery
-  const isEmpty = hasQuery && failedSearchMode === null &&
+  const isEmpty = hasQuery && failedSearchMode === null && !rangoInvalido && !corpusCambiado &&
     (total === 0 || conferencias.length === 0)
 
   // ============================================
@@ -157,6 +231,18 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
       }]
     })
     : []
+
+  // Lo que la mesa anota de la búsqueda: con los filtros, el dossier sabe
+  // de qué recorte y de qué orden salen sus posiciones.
+  const parametrosParaLaMesa: Record<string, unknown> = {
+    modalidad: searchMode,
+    pagina: currentPage,
+    por_pagina: ITEMS_PER_PAGE,
+    total_alcanzado: total,
+    ...(searchMode === 'exact'
+      ? { anio_desde: anioDesde, anio_hasta: anioHasta, orden, huella_corpus: huella ?? null }
+      : {}),
+  }
 
   return (
     <div
@@ -222,11 +308,15 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
                 ? 'Ingresa una frase o un tema para explorar las conferencias.'
                 : (
                     <>
-                      {isEmpty
-                        ? 'Ninguna coincidencia encontrada.'
-                        : searchMode === 'semantic'
-                          ? `Mostrando las ${conferencias.length} conferencias más afines a tu búsqueda.`
-                          : `Mostrando ${conferencias.length} de ${total} conferencias, en orden cronológico.`}
+                      {rangoInvalido
+                        ? 'El rango de años no es válido.'
+                        : corpusCambiado
+                          ? 'El archivo se actualizó mientras recorrías los resultados.'
+                          : isEmpty
+                            ? `Ninguna coincidencia encontrada${descripcionRango}.`
+                            : searchMode === 'semantic'
+                              ? `Mostrando las ${conferencias.length} conferencias más afines a tu búsqueda.`
+                              : `Mostrando ${conferencias.length} de ${conSeparadorDeMiles(total)} conferencias${descripcionRango}, ${describirOrden(orden)}.`}
                       <span
                         data-search-mode={searchMode}
                         className="ml-3 inline-flex rounded-full border px-3 py-1 text-xs font-semibold"
@@ -266,12 +356,61 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
               initialSearchMode={searchMode}
             />
           </div>
+
+          {searchMode === 'exact' && hasQuery && (
+            <>
+              <ExactFilters
+                key={`${queryParam}:${anioDesde}:${anioHasta}:${orden}`}
+                query={queryParam}
+                anioDesde={anioDesde}
+                anioHasta={anioHasta}
+                orden={orden}
+                minYear={MIN_YEAR}
+                maxYear={MAX_YEAR}
+              />
+              {hayRango && (
+                <p className="mt-2 text-xs" style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.45))' }}>
+                  Al filtrar por años no se incluyen las conferencias sin fecha.
+                </p>
+              )}
+            </>
+          )}
         </div>
 
         {/* ============================================
             RESULTADOS O ESTADOS VISUALES
             ============================================ */}
-        {failedSearchMode !== null ? (
+        {rangoInvalido || corpusCambiado ? (
+          <div
+            role="alert"
+            className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border"
+            style={{
+              background: 'rgba(255, 255, 255, 0.02)',
+              borderColor: 'rgba(212, 175, 55, 0.22)'
+            }}
+          >
+            <h2
+              className="text-xl font-medium mb-2"
+              style={{ color: 'var(--color-text-primary, rgba(255,255,255,0.9))' }}
+            >
+              {rangoInvalido ? 'Revisa los años' : 'Los resultados han cambiado'}
+            </h2>
+            <p className="max-w-xl" style={{ color: 'var(--color-text-muted, rgba(255,255,255,0.5))' }}>
+              {rangoInvalido
+                ? `Los años deben estar entre ${MIN_YEAR} y ${MAX_YEAR}, y el año inicial no puede ser posterior al final.`
+                : 'Se incorporaron o corrigieron textos del archivo mientras pasabas de página. Para no repetir ni saltarte conferencias, la búsqueda debe empezar de nuevo.'}
+            </p>
+            {corpusCambiado && (
+              <Link
+                href={reinicioHref}
+                className="mt-5 rounded-full px-5 py-2 text-sm font-semibold"
+                style={{ background: 'rgba(212, 175, 55, 0.16)', color: 'var(--color-gold, #D4AF37)' }}
+              >
+                Volver a la primera página
+              </Link>
+            )}
+          </div>
+        ) : failedSearchMode !== null ? (
           <div
             role="alert"
             className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border"
@@ -338,12 +477,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
                   consulta={queryParam}
                   modo={modoParaLaMesa}
                   items={itemsParaLaMesa}
-                  parametros={{
-                    modalidad: searchMode,
-                    pagina: currentPage,
-                    por_pagina: ITEMS_PER_PAGE,
-                    total_alcanzado: total,
-                  }}
+                  parametros={parametrosParaLaMesa}
                 />
               </div>
             )}
@@ -392,6 +526,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
+                  extraParams={searchMode === 'exact' && huella ? { huella } : undefined}
                 />
               </div>
             )}

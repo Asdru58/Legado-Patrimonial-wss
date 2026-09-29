@@ -65,7 +65,7 @@ function FilaConferencia({ conferencia, query, plegadaPorDefecto }: Readonly<Fil
 
   const detalleHref = `/conferencia/${conferencia.slug}?q=${encodeURIComponent(
     query
-  )}&modo=exacta#${EXACT_MATCH_ANCHOR_ID}`
+  )}&search_mode=exact#${EXACT_MATCH_ANCHOR_ID}`
 
   const mostradas = verTodas ? citas : citas.slice(0, CITAS_VISIBLES)
   const ocultas = citas.length - mostradas.length
@@ -164,7 +164,7 @@ function FilaConferencia({ conferencia, query, plegadaPorDefecto }: Readonly<Fil
               <Link
                 href={`/conferencia/${conferencia.slug}?q=${encodeURIComponent(
                   query
-                )}&modo=exacta&pasaje=${cita.pasajeId}#${EXACT_MATCH_ANCHOR_ID}`}
+                )}&search_mode=exact&pasaje=${cita.pasajeId}#${EXACT_MATCH_ANCHOR_ID}`}
                 className="mt-0.5 shrink-0 rounded px-1.5 py-0.5 text-xs font-semibold transition-colors hover:opacity-80"
                 style={{
                   fontFamily: 'var(--font-mono)',
