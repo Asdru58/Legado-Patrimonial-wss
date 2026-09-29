@@ -45,6 +45,9 @@
   /* Font */
   --font-primary: var(--font-body, 'Outfit'), system-ui, sans-serif;
   --font-serif: var(--font-display, 'EB Garamond'), Georgia, serif;
+  /* Monoespaciada para las fechas del arbol de resultados exactos: alinea
+     los digitos en columna y distingue el dato del titulo. */
+  --font-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, Consolas, monospace;
 }
 
 @theme inline {

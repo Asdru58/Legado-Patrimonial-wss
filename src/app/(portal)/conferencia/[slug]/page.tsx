@@ -7,6 +7,10 @@
 import type { Metadata } from 'next'
 import { cache } from 'react'
 import { notFound } from 'next/navigation'
+import {
+  getValidatedExactPassage,
+  getValidatedSemanticPassage,
+} from '@/lib/services/conferences'
 import { createClient } from '@/lib/supabase/server'
 import { ConferenciaDetalleClient } from './ConferenciaDetalleClient'
 import type { ConferenciaPublica } from '@/types/database'
@@ -36,6 +40,15 @@ const SLUG_REGEX = /^[a-z0-9]+(-[a-z0-9]+)*$/
 
 interface ConferenciaPageProps {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{
+    q?: string | string[]
+    search_mode?: string | string[]
+    pasaje?: string | string[]
+  }>
+}
+
+function readSingleSearchParam(value: string | string[] | undefined): string | null {
+  return typeof value === 'string' ? value : null
 }
 
 // ── Fetch con deduplicación explícita vía cache() de React ──
@@ -105,13 +118,45 @@ export async function generateMetadata({
 
 export default async function ConferenciaPage({
   params,
+  searchParams,
 }: ConferenciaPageProps) {
-  const { slug } = await params
+  const [{ slug }, resolvedSearchParams] = await Promise.all([
+    params,
+    searchParams,
+  ])
   const conferencia = await getConferencia(slug)
 
   if (!conferencia) {
     notFound()
   }
 
-  return <ConferenciaDetalleClient conferencia={conferencia} />
+  const query = readSingleSearchParam(resolvedSearchParams.q)
+  const searchMode = readSingleSearchParam(resolvedSearchParams.search_mode)
+  const passageId = readSingleSearchParam(resolvedSearchParams.pasaje)
+
+  const exactMatch =
+    searchMode === 'exact' && query && passageId
+      ? await getValidatedExactPassage({
+          query,
+          passageId,
+          conferenceId: conferencia.id,
+        })
+      : null
+
+  const semanticPassage =
+    searchMode === 'semantic' && query && passageId
+      ? await getValidatedSemanticPassage({
+          query,
+          passageId,
+          conferenceId: conferencia.id,
+        })
+      : null
+
+  return (
+    <ConferenciaDetalleClient
+      conferencia={conferencia}
+      exactMatch={exactMatch ?? undefined}
+      semanticPassage={semanticPassage ?? undefined}
+    />
+  )
 }

@@ -10,12 +10,26 @@
 
 import { useCallback } from 'react'
 import Link from 'next/link'
+import type {
+  ValidatedExactPassage,
+  ValidatedSemanticPassage,
+} from '@/lib/services/conferences'
 import type { ConferenciaPublica } from '@/types/database'
 import { tieneAudio, tieneVideo, tienePdf } from '@/types/database'
 import { usePlayerStore } from '@/store/playerStore'
+import {
+  EXACT_MATCH_ANCHOR_ID,
+  ExactMatchEvidence,
+} from '@/components/search/ExactMatchEvidence'
+import {
+  SEMANTIC_PASSAGE_ANCHOR_ID,
+  SemanticPassageEvidence,
+} from '@/components/search/SemanticPassageEvidence'
 
 interface ConferenciaDetalleClientProps {
   conferencia: ConferenciaPublica
+  exactMatch?: ValidatedExactPassage
+  semanticPassage?: ValidatedSemanticPassage
 }
 
 // ── Helpers ──
@@ -83,6 +97,8 @@ function buildFallbackSrc(conferencia: ConferenciaPublica): string | null {
 
 export function ConferenciaDetalleClient({
   conferencia,
+  exactMatch,
+  semanticPassage,
 }: ConferenciaDetalleClientProps) {
   const playTrack = usePlayerStore((state) => state.playTrack)
 
@@ -204,6 +220,29 @@ export function ConferenciaDetalleClient({
             </p>
           )}
         </header>
+
+        {exactMatch && (
+          <ExactMatchEvidence
+            id={EXACT_MATCH_ANCHOR_ID}
+            focusOnMount
+            variant="detail"
+            query={exactMatch.query}
+            text={exactMatch.texto}
+            paginaInicio={exactMatch.paginaInicio}
+            paginaFin={exactMatch.paginaFin}
+          />
+        )}
+
+        {semanticPassage && (
+          <SemanticPassageEvidence
+            id={SEMANTIC_PASSAGE_ANCHOR_ID}
+            focusOnMount
+            variant="detail"
+            text={semanticPassage.texto}
+            paginaInicio={semanticPassage.paginaInicio}
+            paginaFin={semanticPassage.paginaFin}
+          />
+        )}
 
         {/* ============================================
             ÁREA MULTIMEDIA: VIDEO

@@ -48,6 +48,36 @@ export type SemanticSearchContext = {
   similitud: number
 }
 
+export type ExactSearchContext = {
+  documentoId: string
+  pasajeId: string
+  orden: number
+  paginaInicio: number
+  paginaFin: number
+  numeroOcurrencias: number
+  /**
+   * El pasaje en bruto. Opcional a proposito: el contexto representativo que ya
+   * usaban la tarjeta y el detalle lo toma de `extracto`, y solo las citas de
+   * `exactMatches` necesitan traer el suyo.
+   */
+  texto?: string
+}
+
+export type ValidatedExactPassage = {
+  query: string
+  pasajeId: string
+  paginaInicio: number
+  paginaFin: number
+  texto: string
+}
+
+export type ValidatedSemanticPassage = {
+  pasajeId: string
+  paginaInicio: number
+  paginaFin: number
+  texto: string
+}
+
 export type LexicalSearchContext = {
   documentoId: string
   pasajeId: string
@@ -59,6 +89,16 @@ export type LexicalSearchContext = {
 }
 
 export type ArchivoSearchConference = ConferenciaPublica & {
+  exactContext?: ExactSearchContext
+  /**
+   * Todas las coincidencias de esta conferencia, no solo la primera.
+   *
+   * La RPC ya las devolvia: su `resultado_limit` cuenta CONFERENCIAS y luego
+   * trae todos los pasajes de cada una. El servicio se quedaba con la primera
+   * fila y tiraba el resto, de modo que una conferencia con nueve menciones
+   * mostraba una. No cuesta una consulta mas: solo dejar de descartarlas.
+   */
+  exactMatches?: ExactSearchContext[]
   semanticContext?: SemanticSearchContext
   lexicalContext?: LexicalSearchContext
 }
@@ -76,6 +116,8 @@ const DEFAULT_PAGE = 1
 const DEFAULT_LIMIT = 20
 const MAX_LIMIT = 100
 const MAX_QUERY_LENGTH = 200
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 // ── Columnas de la vista pública (sin campos operativos ni FTS) ──
 const SELECT_COLUMNS = `
@@ -230,6 +272,75 @@ type CorpusSemanticSearchRow = {
   total_count: number | string
 }
 
+/**
+ * Revalida el contexto Semantico con la misma consulta vectorial y la RPC
+ * publica ya autorizada. La URL aporta solo identificadores no confiables.
+ *
+ * Se mantiene deliberadamente en buscar_corpus_semantica (v1) y no en la v2:
+ * la v2 aplica un prefiltro ANN que no garantiza exactitud total, de modo que
+ * un pasaje legitimo citado en una URL podria quedar fuera de su alcance y
+ * romper el enlace compartido. Esta ruta se usa poco, asi que el costo mayor
+ * de la busqueda exacta no compensa ese riesgo.
+ */
+export async function getValidatedSemanticPassage(
+  params: Readonly<{
+    query: string
+    passageId: string
+    conferenceId: string
+  }>
+): Promise<ValidatedSemanticPassage | null> {
+  const query = params.query.trim()
+
+  if (
+    !query ||
+    query.length > MAX_QUERY_LENGTH ||
+    !UUID_REGEX.test(params.passageId) ||
+    !UUID_REGEX.test(params.conferenceId)
+  ) {
+    return null
+  }
+
+  const encoded = await encodeBgeQuery(query)
+  const supabase = await createClient()
+  const { data: rawRows, error } = await supabase.rpc(
+    'buscar_corpus_semantica',
+    {
+      consulta_vector: encoded.vector,
+      resultado_limit: MAX_LIMIT,
+      resultado_offset: 0,
+    }
+  )
+
+  if (error) {
+    console.error('[getValidatedSemanticPassage] RPC error:', error)
+    return null
+  }
+
+  const row = ((rawRows ?? []) as CorpusSemanticSearchRow[]).find(
+    (candidate) =>
+      candidate.pasaje_id === params.passageId &&
+      candidate.conferencia_id === params.conferenceId
+  )
+
+  if (
+    !row ||
+    typeof row.texto !== 'string' ||
+    !Number.isSafeInteger(row.pagina_inicio) ||
+    !Number.isSafeInteger(row.pagina_fin) ||
+    row.pagina_inicio < 1 ||
+    row.pagina_fin < row.pagina_inicio
+  ) {
+    return null
+  }
+
+  return {
+    pasajeId: row.pasaje_id,
+    paginaInicio: row.pagina_inicio,
+    paginaFin: row.pagina_fin,
+    texto: row.texto,
+  }
+}
+
 async function searchSemanticCorpus(
   params: {
     query: string
@@ -241,7 +352,7 @@ async function searchSemanticCorpus(
   const supabase = await createClient()
 
   const { data: rawRows, error } = await supabase.rpc(
-    'buscar_corpus_semantica',
+    'buscar_corpus_semantica_v2',
     {
       consulta_vector: encoded.vector,
       resultado_limit: params.limit,
@@ -465,6 +576,68 @@ type CorpusExactSearchRow = {
 }
 
 /**
+ * Revalida el contexto Exacto desde el servidor usando exclusivamente la RPC
+ * publica ya autorizada. La URL solo aporta identificadores no confiables:
+ * el bloque se devuelve cuando el pasaje aparece para la consulta y pertenece
+ * a la conferencia abierta.
+ */
+export async function getValidatedExactPassage(
+  params: Readonly<{
+    query: string
+    passageId: string
+    conferenceId: string
+  }>
+): Promise<ValidatedExactPassage | null> {
+  const query = params.query.trim()
+
+  if (
+    !query ||
+    query.length > MAX_QUERY_LENGTH ||
+    !UUID_REGEX.test(params.passageId) ||
+    !UUID_REGEX.test(params.conferenceId)
+  ) {
+    return null
+  }
+
+  const supabase = await createClient()
+  const { data: rawRows, error } = await supabase.rpc('buscar_corpus_exacta', {
+    consulta: query,
+    resultado_limit: MAX_LIMIT,
+    resultado_offset: 0,
+  })
+
+  if (error) {
+    console.error('[getValidatedExactPassage] RPC error:', error)
+    return null
+  }
+
+  const row = ((rawRows ?? []) as CorpusExactSearchRow[]).find(
+    (candidate) =>
+      candidate.pasaje_id === params.passageId &&
+      candidate.conferencia_id === params.conferenceId
+  )
+
+  if (
+    !row ||
+    typeof row.texto !== 'string' ||
+    !Number.isSafeInteger(row.pagina_inicio) ||
+    !Number.isSafeInteger(row.pagina_fin) ||
+    row.pagina_inicio < 1 ||
+    row.pagina_fin < row.pagina_inicio
+  ) {
+    return null
+  }
+
+  return {
+    query,
+    pasajeId: row.pasaje_id,
+    paginaInicio: row.pagina_inicio,
+    paginaFin: row.pagina_fin,
+    texto: row.texto,
+  }
+}
+
+/**
  * Ejecuta la RPC Exacta, valida su total y agrupa las filas por conferencia.
  * La primera fila de cada conferencia es su mejor pasaje por contrato SQL.
  */
@@ -507,15 +680,18 @@ async function searchExactCorpus(
     throw new Error('Error al buscar en el archivo de conferencias.')
   }
 
-  const bestRowByConference = new Map<string, CorpusExactSearchRow>()
+  // Se conservan TODAS las filas de cada conferencia. La primera sigue siendo
+  // la representativa —`exactContext`, que alimenta la tarjeta y el detalle—,
+  // y las demas viajan en `exactMatches` para el arbol de resultados.
+  const rowsByConference = new Map<string, CorpusExactSearchRow[]>()
 
   for (const row of rows) {
-    if (!bestRowByConference.has(row.conferencia_id)) {
-      bestRowByConference.set(row.conferencia_id, row)
-    }
+    const previas = rowsByConference.get(row.conferencia_id)
+    if (previas) previas.push(row)
+    else rowsByConference.set(row.conferencia_id, [row])
   }
 
-  const bestRows = [...bestRowByConference.values()]
+  const bestRows = [...rowsByConference.values()].map((grupo) => grupo[0])
   const conferenceIds = bestRows.map((row) => row.conferencia_id)
 
   const { data: conferenceRows, error: conferenceError } = await supabase
@@ -535,7 +711,7 @@ async function searchExactCorpus(
     ] as const)
   )
 
-  const data = bestRows.map((row): ConferenciaPublica => {
+  const data = bestRows.map((row): ArchivoSearchConference => {
     const conference = conferenceById.get(row.conferencia_id)
 
     if (!conference) {
@@ -553,6 +729,25 @@ async function searchExactCorpus(
       titulo: row.titulo,
       fecha_impartida: row.fecha,
       extracto: row.texto,
+      exactContext: {
+        documentoId: row.documento_id,
+        pasajeId: row.pasaje_id,
+        orden: row.orden,
+        paginaInicio: row.pagina_inicio,
+        paginaFin: row.pagina_fin,
+        numeroOcurrencias: row.numero_ocurrencias,
+      },
+      exactMatches: (rowsByConference.get(row.conferencia_id) ?? [row]).map(
+        (fila): ExactSearchContext => ({
+          documentoId: fila.documento_id,
+          pasajeId: fila.pasaje_id,
+          orden: fila.orden,
+          paginaInicio: fila.pagina_inicio,
+          paginaFin: fila.pagina_fin,
+          numeroOcurrencias: fila.numero_ocurrencias,
+          texto: fila.texto,
+        })
+      ),
     }
   })
 
@@ -753,6 +948,38 @@ export async function getConferenciasPorAnio(): Promise<{
     .sort((a, b) => a.anio - b.anio)
 
   return { anios, sinFecha: sinFecha ?? 0 }
+}
+
+/**
+ * Cobertura del buscador: cuántas conferencias tienen texto indexado y sobre
+ * cuántas hay en total.
+ *
+ * El primer número no puede salir de una consulta directa: vive en
+ * `corpus_transcripciones`, que el rol público no puede leer. Lo entrega la
+ * función `contar_conferencias_indexadas()`, que devuelve un entero y nada
+ * más. Cuenta conferencias distintas —no filas de transcripción— para que el
+ * dato sea comparable con el total, que también son conferencias.
+ */
+export async function getCoberturaBuscador(): Promise<{
+  indexadas: number
+  total: number
+}> {
+  const supabase = await createClient()
+
+  const [indexadas, total] = await Promise.all([
+    supabase.rpc('contar_conferencias_indexadas'),
+    supabase.from('conferencias_publicas').select('id', { count: 'exact', head: true }),
+  ])
+
+  if (indexadas.error || total.error) {
+    console.error('[getCoberturaBuscador] error:', indexadas.error ?? total.error)
+    throw new Error('Error al obtener la cobertura del buscador.')
+  }
+
+  return {
+    indexadas: Number(indexadas.data ?? 0),
+    total: total.count ?? 0,
+  }
 }
 
 /**

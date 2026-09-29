@@ -2,13 +2,70 @@
 
 import Link from 'next/link'
 import { useCallback } from 'react'
+import type {
+  ExactSearchContext,
+  SemanticSearchContext,
+} from '@/lib/services/conferences'
 import type { ConferenciaPublica } from '@/types/database'
 import { tieneAudio, tieneVideo, tienePdf } from '@/types/database'
 import { usePlayerStore } from '@/store/playerStore'
+import {
+  EXACT_MATCH_ANCHOR_ID,
+  ExactMatchEvidence,
+} from '@/components/search/ExactMatchEvidence'
+import {
+  SEMANTIC_PASSAGE_ANCHOR_ID,
+  SemanticPassageEvidence,
+} from '@/components/search/SemanticPassageEvidence'
 
 type ConferenceCardProps = {
   conferencia: ConferenciaPublica
   index?: number
+  exactMatch?: {
+    query: string
+    context: ExactSearchContext
+  }
+  semanticMatch?: {
+    query: string
+    context: SemanticSearchContext
+    /**
+     * Escalón de afinidad dentro de esta misma búsqueda. Lo calcula la página
+     * a partir del puesto en el ranking, no del valor de similitud, que no
+     * tiene significado absoluto.
+     */
+    afinidad?: AfinidadNivel
+  }
+}
+
+type AfinidadNivel = 'alta' | 'media' | 'baja'
+
+const ETIQUETA_AFINIDAD: Readonly<Record<AfinidadNivel, string>> = {
+  alta: 'Muy afín',
+  media: 'Afín',
+  baja: 'Relacionado',
+}
+
+/**
+ * Se apoya en la misma paleta dorada de las demás píldoras y reserva el tono
+ * más saturado para el escalón superior, de modo que la jerarquía se lea de un
+ * vistazo sin introducir un color nuevo en la tarjeta.
+ */
+const ESTILO_AFINIDAD: Readonly<Record<AfinidadNivel, React.CSSProperties>> = {
+  alta: {
+    background: 'rgba(212, 175, 55, 0.18)',
+    color: 'var(--color-gold)',
+    border: '1px solid rgba(212, 175, 55, 0.34)',
+  },
+  media: {
+    background: 'rgba(212, 175, 55, 0.10)',
+    color: 'var(--color-gold)',
+    border: '1px solid rgba(212, 175, 55, 0.18)',
+  },
+  baja: {
+    background: 'transparent',
+    color: 'var(--color-text-secondary)',
+    border: '1px solid rgba(212, 175, 55, 0.14)',
+  },
 }
 
 function formatFecha(fecha: string | null): string {
@@ -27,15 +84,52 @@ function formatFecha(fecha: string | null): string {
   }).format(parsed)
 }
 
+function buildConferenceDetailHref(
+  slug: string,
+  exactMatch: ConferenceCardProps['exactMatch'],
+  semanticMatch: ConferenceCardProps['semanticMatch']
+): string {
+  const basePath = `/conferencia/${slug}`
+
+  if (exactMatch) {
+    const searchParams = new URLSearchParams({
+      q: exactMatch.query,
+      search_mode: 'exact',
+      pasaje: exactMatch.context.pasajeId,
+    })
+
+    return `${basePath}?${searchParams.toString()}#${EXACT_MATCH_ANCHOR_ID}`
+  }
+
+  if (semanticMatch) {
+    const searchParams = new URLSearchParams({
+      q: semanticMatch.query,
+      search_mode: 'semantic',
+      pasaje: semanticMatch.context.pasajeId,
+    })
+
+    return `${basePath}?${searchParams.toString()}#${SEMANTIC_PASSAGE_ANCHOR_ID}`
+  }
+
+  return basePath
+}
+
 export function ConferenceCard({
   conferencia,
   index = 0,
+  exactMatch,
+  semanticMatch,
 }: Readonly<ConferenceCardProps>) {
   const playTrack = usePlayerStore((state) => state.playTrack)
 
   const hasAudio = tieneAudio(conferencia)
   const hasVideo = tieneVideo(conferencia)
   const hasPdf = tienePdf(conferencia)
+  const detailHref = buildConferenceDetailHref(
+    conferencia.slug,
+    exactMatch,
+    semanticMatch
+  )
 
   const handlePlay = useCallback(() => {
     if (!conferencia.audio_url) return
@@ -75,7 +169,7 @@ export function ConferenceCard({
             </p>
 
             <Link
-              href={`/conferencia/${conferencia.slug}`}
+              href={detailHref}
               className="mt-2 block text-lg font-bold leading-snug transition-opacity hover:opacity-85"
               style={{ color: 'var(--color-text-primary)' }}
             >
@@ -93,7 +187,7 @@ export function ConferenceCard({
           </div>
 
           <Link
-            href={`/conferencia/${conferencia.slug}`}
+            href={detailHref}
             className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-all hover:-translate-y-0.5"
             style={{
               borderColor: 'rgba(212, 175, 55, 0.16)',
@@ -119,7 +213,34 @@ export function ConferenceCard({
           </Link>
         </div>
 
+        {exactMatch && conferencia.extracto && (
+          <ExactMatchEvidence
+            query={exactMatch.query}
+            text={conferencia.extracto}
+            paginaInicio={exactMatch.context.paginaInicio}
+            paginaFin={exactMatch.context.paginaFin}
+          />
+        )}
+
+        {semanticMatch && (
+          <SemanticPassageEvidence
+            text={semanticMatch.context.texto}
+            paginaInicio={semanticMatch.context.paginaInicio}
+            paginaFin={semanticMatch.context.paginaFin}
+          />
+        )}
+
         <div className="mb-5 flex flex-wrap gap-2">
+          {semanticMatch?.afinidad && (
+            <span
+              className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
+              style={ESTILO_AFINIDAD[semanticMatch.afinidad]}
+              title="Posición de este resultado dentro de esta búsqueda"
+            >
+              {ETIQUETA_AFINIDAD[semanticMatch.afinidad]}
+            </span>
+          )}
+
           {hasAudio && (
             <span
               className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
@@ -198,7 +319,7 @@ export function ConferenceCard({
           </button>
 
           <Link
-            href={`/conferencia/${conferencia.slug}`}
+            href={detailHref}
             className="inline-flex min-h-11 items-center justify-center rounded-xl border px-4 text-sm font-medium transition-all hover:-translate-y-0.5"
             style={{
               background: 'rgba(255,255,255,0.03)',

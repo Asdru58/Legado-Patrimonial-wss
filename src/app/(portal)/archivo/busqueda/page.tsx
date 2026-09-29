@@ -6,10 +6,17 @@
 
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { searchArchivoConferencias } from '@/lib/services/conferences'
+import {
+  searchArchivoConferencias,
+  getCoberturaBuscador,
+} from '@/lib/services/conferences'
+import { conSeparadorDeMiles } from '@/lib/format'
 import { ConferenceCard } from '@/components/ui/ConferenceCard'
+import { ExactResultsTree } from '@/components/search/ExactResultsTree'
 import { HeroSearch, type PublicSearchMode } from '@/components/hero/HeroSearch'
 import { Pagination } from '@/app/(portal)/archivo/Pagination'
+import { GuardarBusqueda } from '@/components/estudio/GuardarBusqueda'
+import type { ItemAGuardar } from '@/lib/services/estudio'
 
 type BusquedaPageProps = {
   searchParams: Promise<{
@@ -19,7 +26,40 @@ type BusquedaPageProps = {
   }>
 }
 
-const ITEMS_PER_PAGE = 20
+const ITEMS_PER_PAGE = 50
+
+/**
+ * Techo de resultados navegables en la modalidad Semántica.
+ *
+ * El `total` que devuelve la RPC no mide afinidad: cuenta cuántas conferencias
+ * distintas caen dentro de su prefiltro de 2.000 pasajes, así que para una
+ * consulta amplia ronda el millar sin que eso signifique que haya mil
+ * conferencias pertinentes. Ofrecer cincuenta páginas sobre ese número
+ * prometía un recorrido que no lleva a ninguna parte.
+ *
+ * Con este techo quedan dos páginas: los cincuenta primeros y otros cincuenta
+ * para quien quiera seguir bajando. La cifra no se anuncia en pantalla.
+ */
+const MAX_SEMANTIC_RESULTS = 100
+
+/**
+ * Traduce el puesto en el ranking a uno de tres escalones.
+ *
+ * Deliberadamente NO se deriva del valor de similitud. Ese valor carece de
+ * significado absoluto: el experimento C-01 lo midió entre 0,46 y 0,72 para
+ * los pasajes pertinentes y entre 0,47 y 0,69 para los que no lo eran, rangos
+ * que se solapan casi por completo. Además, en una consulta real los cien
+ * primeros resultados caben en siete centésimas, de modo que cualquier
+ * porcentaje o barra exageraría diferencias que no existen.
+ *
+ * Lo único que el dato sostiene es el orden relativo dentro de una misma
+ * búsqueda, y eso es lo que expresan estos tres escalones.
+ */
+function nivelDeAfinidad(puesto: number): 'alta' | 'media' | 'baja' {
+  if (puesto <= 10) return 'alta'
+  if (puesto <= 25) return 'media'
+  return 'baja'
+}
 
 export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPageProps) {
   const resolvedSearchParams = await searchParams
@@ -69,7 +109,16 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
 
   const { data: conferencias, total } = searchResult
 
-  const totalPages = Math.ceil(total / ITEMS_PER_PAGE)
+  // El aviso de cobertura solo se pinta en la modalidad Semántica, así que
+  // solo ahí se paga la consulta.
+  const cobertura =
+    searchMode === 'semantic'
+      ? await getCoberturaBuscador()
+      : { indexadas: 0, total: 0 }
+
+  const totalPages = searchMode === 'semantic'
+    ? Math.ceil(Math.min(total, MAX_SEMANTIC_RESULTS) / ITEMS_PER_PAGE)
+    : Math.ceil(total / ITEMS_PER_PAGE)
 
   // Separación de estados:
   // 1) Sin término de búsqueda
@@ -78,6 +127,36 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
   const isIdle = !hasQuery
   const isEmpty = hasQuery && failedSearchMode === null &&
     (total === 0 || conferencias.length === 0)
+
+  // ============================================
+  // ESTACIÓN DE ESTUDIO — lo que se guardaría en la mesa
+  //
+  // Tres campos por ítem y nada más: pasaje_id, posicion y similitud.
+  // El texto no viaja; estudio_crear_dossier lo toma de corpus_pasajes.
+  //
+  // La modalidad léxica queda fuera a propósito: el CHECK de
+  // estudio_dossier.modo solo admite 'semantica' y 'exacta'.
+  // ============================================
+  const modoParaLaMesa =
+    searchMode === 'semantic' ? 'semantica'
+      : searchMode === 'exact' ? 'exacta'
+        : null
+
+  const itemsParaLaMesa: ItemAGuardar[] = modoParaLaMesa
+    ? conferencias.flatMap((conf, idx) => {
+      const contexto =
+        searchMode === 'semantic' ? conf.semanticContext : conf.exactContext
+      if (!contexto) return []
+      return [{
+        pasaje_id: contexto.pasajeId,
+        posicion: (currentPage - 1) * ITEMS_PER_PAGE + idx + 1,
+        similitud:
+          searchMode === 'semantic' && conf.semanticContext
+            ? conf.semanticContext.similitud
+            : null,
+      }]
+    })
+    : []
 
   return (
     <div
@@ -145,7 +224,9 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
                     <>
                       {isEmpty
                         ? 'Ninguna coincidencia encontrada.'
-                        : `Mostrando ${conferencias.length} de ${total} coincidencias con ranking de relevancia.`}
+                        : searchMode === 'semantic'
+                          ? `Mostrando las ${conferencias.length} conferencias más afines a tu búsqueda.`
+                          : `Mostrando ${conferencias.length} de ${total} conferencias, en orden cronológico.`}
                       <span
                         data-search-mode={searchMode}
                         className="ml-3 inline-flex rounded-full border px-3 py-1 text-xs font-semibold"
@@ -171,8 +252,10 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
                 color: 'var(--color-text-secondary, rgba(255,255,255,0.75))',
               }}
             >
-              Búsqueda de texto completo disponible actualmente en 40 de 5.866
-              conferencias (fase piloto).
+              La búsqueda de texto completo alcanza{' '}
+              {conSeparadorDeMiles(cobertura.indexadas)} de las{' '}
+              {conSeparadorDeMiles(cobertura.total)} conferencias. El resto se
+              va incorporando.
             </div>
           )}
 
@@ -246,17 +329,52 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
           </div>
         ) : !isEmpty ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* ============================================
+                GUARDAR EN LA MESA DE ESTUDIO
+                ============================================ */}
+            {modoParaLaMesa && itemsParaLaMesa.length > 0 && (
+              <div className="mb-8">
+                <GuardarBusqueda
+                  consulta={queryParam}
+                  modo={modoParaLaMesa}
+                  items={itemsParaLaMesa}
+                  parametros={{
+                    modalidad: searchMode,
+                    pagina: currentPage,
+                    por_pagina: ITEMS_PER_PAGE,
+                    total_alcanzado: total,
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Lista de una columna, no cuadrícula: los resultados de una
+                búsqueda textual se escanean verticalmente, y una columna
+                estrecha parte los renglones cada cuatro o cinco palabras.
+                El ancho máximo mantiene la línea en unos 70 caracteres. */}
+            {/* La modalidad exacta usa el arbol compacto: hay frase literal que
+                resaltar y una misma conferencia puede traer decenas de
+                coincidencias, que como tarjetas ocuparian metros de pagina.
+                La semantica se queda con las tarjetas. */}
+            {searchMode === 'exact' ? (
+              <div className="max-w-5xl">
+                <ExactResultsTree conferencias={conferencias} query={queryParam} />
+              </div>
+            ) : (
+            <div className="flex max-w-3xl flex-col gap-8">
               {conferencias.map((conf, idx) => (
                 <div key={conf.id} className="flex flex-col gap-3">
                   <ConferenceCard
                     conferencia={conf}
                     index={idx}
-                    exactMatch={
-                      searchMode === 'exact' && conf.exactContext
+                    semanticMatch={
+                      searchMode === 'semantic' && conf.semanticContext
                         ? {
                             query: queryParam,
-                            context: conf.exactContext,
+                            context: conf.semanticContext,
+                            afinidad: nivelDeAfinidad(
+                              (currentPage - 1) * ITEMS_PER_PAGE + idx + 1
+                            ),
                           }
                         : undefined
                     }
@@ -264,6 +382,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
                 </div>
               ))}
             </div>
+            )}
 
             {/* ============================================
                 PAGINACIÓN
