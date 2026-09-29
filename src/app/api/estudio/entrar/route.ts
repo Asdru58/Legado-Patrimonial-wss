@@ -29,6 +29,7 @@ import {
     VIDA_COOKIE_SEGUNDOS,
 } from '@/lib/estudio/constantes'
 import { listarDossiers } from '@/lib/services/estudio'
+import { mesaHabilitada } from '@/lib/estudio/disponibilidad'
 
 /**
  * ¿Esa llave corresponde a una mesa que ya existe?
@@ -69,6 +70,10 @@ function destinoSeguro(valor: string | null): string {
 }
 
 export async function GET(request: NextRequest) {
+    if (!mesaHabilitada) {
+        return NextResponse.redirect(new URL('/mesa', request.url))
+    }
+
     const destino = destinoSeguro(request.nextUrl.searchParams.get('destino'))
 
     const pegada = request.nextUrl.searchParams.get('llave')?.trim().toLowerCase()

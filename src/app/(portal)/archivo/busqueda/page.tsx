@@ -22,6 +22,7 @@ import { ExactFilters, describirOrden } from '@/components/search/ExactFilters'
 import { HeroSearch, type PublicSearchMode } from '@/components/hero/HeroSearch'
 import { Pagination } from '@/app/(portal)/archivo/Pagination'
 import { GuardarBusqueda } from '@/components/estudio/GuardarBusqueda'
+import { mesaHabilitada } from '@/lib/estudio/disponibilidad'
 import type { ItemAGuardar } from '@/lib/services/estudio'
 
 type BusquedaPageProps = {
@@ -185,10 +186,12 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
 
   // El aviso de cobertura solo se pinta en la modalidad Semántica, así que
   // solo ahí se paga la consulta.
+  // El conteo es informativo: si la RPC aún no existe en este entorno,
+  // la búsqueda debe seguir mostrando sus resultados.
   const cobertura =
-    searchMode === 'semantic'
-      ? await getCoberturaBuscador()
-      : { indexadas: 0, total: 0 }
+    searchMode === 'semantic' && failedSearchMode === null
+      ? await getCoberturaBuscador().catch(() => null)
+      : null
 
   const totalPages = searchMode === 'semantic'
     ? Math.ceil(Math.min(total, MAX_SEMANTIC_RESULTS) / ITEMS_PER_PAGE)
@@ -332,7 +335,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
                   )}
           </p>
 
-          {searchMode === 'semantic' && (
+          {searchMode === 'semantic' && cobertura !== null && (
             <div
               role="note"
               className="mt-5 rounded-xl border px-4 py-3 text-sm"
@@ -471,7 +474,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
             {/* ============================================
                 GUARDAR EN LA MESA DE ESTUDIO
                 ============================================ */}
-            {modoParaLaMesa && itemsParaLaMesa.length > 0 && (
+            {mesaHabilitada && modoParaLaMesa && itemsParaLaMesa.length > 0 && (
               <div className="mb-8">
                 <GuardarBusqueda
                   consulta={queryParam}

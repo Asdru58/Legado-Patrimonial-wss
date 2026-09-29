@@ -25,6 +25,8 @@ import {
 } from '@/lib/services/estudio'
 import { AccionesDossier } from '@/components/estudio/AccionesDossier'
 import { LlaveRecuperacion } from '@/components/estudio/LlaveRecuperacion'
+import { mesaHabilitada } from '@/lib/estudio/disponibilidad'
+import { MesaNoDisponible } from '@/components/estudio/MesaNoDisponible'
 
 export const dynamic = 'force-dynamic'
 
@@ -172,6 +174,8 @@ function TarjetaDossier({ dossier }: { dossier: ResumenDossier }) {
 }
 
 export default async function MesaPage({ searchParams }: Props) {
+    if (!mesaHabilitada) return <MesaNoDisponible />
+
     const { estado, llave } = await searchParams
     const filtro: Filtro = esFiltro(estado) ? estado : 'activo'
 

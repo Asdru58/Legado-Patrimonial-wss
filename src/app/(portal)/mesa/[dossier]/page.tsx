@@ -18,6 +18,8 @@ import {
 } from '@/lib/services/estudio'
 import { AccionesDossier } from '@/components/estudio/AccionesDossier'
 import { ListaPasajes, PistaDeAtajos } from '@/components/estudio/ListaPasajes'
+import { mesaHabilitada } from '@/lib/estudio/disponibilidad'
+import { MesaNoDisponible } from '@/components/estudio/MesaNoDisponible'
 
 export const dynamic = 'force-dynamic'
 
@@ -42,6 +44,8 @@ type Props = {
 }
 
 export default async function DossierPage({ params, searchParams }: Props) {
+    if (!mesaHabilitada) return <MesaNoDisponible />
+
     const { dossier: dossierId } = await params
     const { vista } = await searchParams
     const filtro: FiltroVista = esFiltro(vista) ? vista : 'todos'
