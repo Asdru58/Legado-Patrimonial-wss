@@ -1,15 +1,50 @@
 import Link from "next/link";
 import { ArchiveEntry } from "@/components/hero/ArchiveEntry";
 import { DashboardGrid, HeroSection } from "@/components/ui";
+import { getEstadisticasPortada } from "@/lib/services/conferences";
+import { conSeparadorDeMiles } from "@/lib/format";
 
-const stats = [
-  { value: "5,866", label: "Conferencias", ariaLabel: "5866 conferencias en el archivo" },
-  { value: "44", label: "Años de archivo", ariaLabel: "44 años de archivo" },
-  { value: "6", label: "Colecciones", ariaLabel: "6 colecciones disponibles" },
-  { value: "5", label: "Episodios", ariaLabel: "5 episodios disponibles" },
-] as const;
+/**
+ * Las cifras se recalculan una vez por hora, no en cada visita.
+ *
+ * Antes eran constantes y se desfasaban en silencio: «Episodios 5» era falso,
+ * porque el quinto está sin publicar y el visitante ve cuatro. Consultarlas en
+ * cada carga habría convertido la portada en una página dinámica; con esta
+ * revalidación se pagan cuatro consultas por hora y la portada se sigue
+ * sirviendo desde la caché.
+ *
+ * Las cifras que se pintan son las que ve el público, no las de la base: hay
+ * 7 colecciones y 5 episodios, pero una colección y un episodio están sin
+ * publicar. Quedan anotados en `docs/REGISTROS_A_MEDIO_CREAR.md`.
+ */
+export const revalidate = 3600;
 
-export default function Home() {
+export default async function Home() {
+  const cifras = await getEstadisticasPortada();
+
+  const stats = [
+    {
+      value: conSeparadorDeMiles(cifras.conferencias),
+      label: "Conferencias",
+      ariaLabel: `${cifras.conferencias} conferencias en el archivo`,
+    },
+    {
+      value: String(cifras.anios),
+      label: "Años de archivo",
+      ariaLabel: `${cifras.anios} años de archivo`,
+    },
+    {
+      value: String(cifras.colecciones),
+      label: "Colecciones",
+      ariaLabel: `${cifras.colecciones} colecciones disponibles`,
+    },
+    {
+      value: String(cifras.episodios),
+      label: "Episodios",
+      ariaLabel: `${cifras.episodios} episodios disponibles`,
+    },
+  ] as const;
+
   return (
     <div className="min-h-screen bg-[#0F0D0A]">
       <HeroSection />
@@ -25,7 +60,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 md:grid-cols-4">
           {stats.map((stat) => (
             <div
-              key={stat.value}
+              key={stat.label}
               role="group"
               aria-label={stat.ariaLabel}
               className="text-center md:text-left"

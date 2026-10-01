@@ -1092,6 +1092,58 @@ export async function getCoberturaBuscador(): Promise<{
 }
 
 /**
+ * Cifras de la portada, calculadas en vez de escritas a mano.
+ *
+ * Las cuatro salen de relaciones que el rol público ya puede leer, así que no
+ * hace falta conceder ningún permiso nuevo. Las consultas van en paralelo y
+ * ninguna devuelve filas: tres son conteos de cabecera y la cuarta es la RPC
+ * de conteo por año, que trae una fila por año y no las 5.866 conferencias.
+ *
+ * No incluye el número de conferencias con texto indexado: esa cifra vive en
+ * `corpus_transcripciones`, que el rol público no puede leer. La calcula
+ * `getCoberturaBuscador` a través de la función de conteo, y solo la usa el
+ * aviso del buscador.
+ */
+export async function getEstadisticasPortada(): Promise<{
+  conferencias: number
+  anios: number
+  colecciones: number
+  episodios: number
+}> {
+  const supabase = await createClient()
+
+  const [porAnio, conferencias, colecciones, episodios] = await Promise.all([
+    supabase.rpc('conferencias_por_anio'),
+    supabase.from('conferencias_publicas').select('id', { count: 'exact', head: true }),
+    supabase.from('colecciones').select('id', { count: 'exact', head: true }),
+    supabase.from('episodios').select('id', { count: 'exact', head: true }),
+  ])
+
+  const errores = [porAnio.error, conferencias.error, colecciones.error, episodios.error]
+    .filter((e): e is NonNullable<typeof e> => Boolean(e))
+
+  if (errores.length > 0) {
+    console.error('[getEstadisticasPortada] error:', errores)
+    throw new Error('Error al obtener las cifras de la portada.')
+  }
+
+  const listaAnios = ((porAnio.data ?? []) as ConteoAnioRpc[])
+    .map((row) => Number(row.anio))
+    .filter((anio) => Number.isFinite(anio))
+    .sort((a, b) => a - b)
+
+  const primero = listaAnios.at(0)
+  const ultimo = listaAnios.at(-1)
+
+  return {
+    conferencias: conferencias.count ?? 0,
+    anios: primero !== undefined && ultimo !== undefined ? ultimo - primero : 0,
+    colecciones: colecciones.count ?? 0,
+    episodios: episodios.count ?? 0,
+  }
+}
+
+/**
  * Panel 2 — Meses con conferencias dentro de un año.
  *
  * Usa estrictamente rangos de fecha (>= inicio_año, < inicio_año_siguiente),
