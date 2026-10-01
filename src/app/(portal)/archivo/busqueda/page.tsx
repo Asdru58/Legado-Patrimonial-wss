@@ -15,9 +15,29 @@ import {
   MAX_YEAR,
   type ExactOrder,
 } from '@/lib/services/conferences'
+import {
+  obtenerVistaExtractos,
+  BLOQUES_EXTRACTOS,
+  BLOQUE_INICIAL,
+  ORDENES_EXTRACTOS,
+  ORDEN_INICIAL,
+  TOPES_EXTRACTOS,
+  TOPE_INICIAL,
+  type BloqueExtractos,
+  type OrdenExtractos,
+  type TopeExtractos,
+  type VistaExtractos,
+} from '@/lib/services/semanticExtracts'
 import { conSeparadorDeMiles } from '@/lib/format'
-import { ConferenceCard } from '@/components/ui/ConferenceCard'
 import { ExactResultsTree } from '@/components/search/ExactResultsTree'
+import {
+  SemanticAmpliar,
+  SemanticControls,
+  SemanticCounter,
+  SemanticExtractsList,
+  describirRango,
+  type EstadoBusquedaSemantica,
+} from '@/components/search/SemanticExtracts'
 import { ExactFilters, describirOrden } from '@/components/search/ExactFilters'
 import { HeroSearch, type PublicSearchMode } from '@/components/hero/HeroSearch'
 import { Pagination } from '@/app/(portal)/archivo/Pagination'
@@ -34,6 +54,8 @@ type BusquedaPageProps = {
     hasta?: string | string[]
     orden?: string | string[]
     huella?: string | string[]
+    tope?: string | string[]
+    bloque?: string | string[]
   }>
 }
 
@@ -58,37 +80,23 @@ function leerHuella(valor: string | string[] | undefined): string | null {
   return typeof valor === 'string' && /^[0-9a-f]{32}$/.test(valor) ? valor : null
 }
 
-/**
- * Techo de resultados navegables en la modalidad Semántica.
- *
- * El `total` que devuelve la RPC no mide afinidad: cuenta cuántas conferencias
- * distintas caen dentro de su prefiltro de 2.000 pasajes, así que para una
- * consulta amplia ronda el millar sin que eso signifique que haya mil
- * conferencias pertinentes. Ofrecer cincuenta páginas sobre ese número
- * prometía un recorrido que no lleva a ninguna parte.
- *
- * Con este techo quedan dos páginas: los cincuenta primeros y otros cincuenta
- * para quien quiera seguir bajando. La cifra no se anuncia en pantalla.
- */
-const MAX_SEMANTIC_RESULTS = 100
+// ── Parámetros de la modalidad Semántica (vista de extractos) ──
+// Lo que no sea un valor admitido vuelve al de omisión.
 
-/**
- * Traduce el puesto en el ranking a uno de tres escalones.
- *
- * Deliberadamente NO se deriva del valor de similitud. Ese valor carece de
- * significado absoluto: el experimento C-01 lo midió entre 0,46 y 0,72 para
- * los pasajes pertinentes y entre 0,47 y 0,69 para los que no lo eran, rangos
- * que se solapan casi por completo. Además, en una consulta real los cien
- * primeros resultados caben en siete centésimas, de modo que cualquier
- * porcentaje o barra exageraría diferencias que no existen.
- *
- * Lo único que el dato sostiene es el orden relativo dentro de una misma
- * búsqueda, y eso es lo que expresan estos tres escalones.
- */
-function nivelDeAfinidad(puesto: number): 'alta' | 'media' | 'baja' {
-  if (puesto <= 10) return 'alta'
-  if (puesto <= 25) return 'media'
-  return 'baja'
+function leerOrdenSemantico(valor: string | string[] | undefined): OrdenExtractos {
+  return typeof valor === 'string' && (ORDENES_EXTRACTOS as readonly string[]).includes(valor)
+    ? (valor as OrdenExtractos)
+    : ORDEN_INICIAL
+}
+
+function leerTope(valor: string | string[] | undefined): TopeExtractos {
+  const n = typeof valor === 'string' ? Number(valor) : NaN
+  return (TOPES_EXTRACTOS as readonly number[]).includes(n) ? (n as TopeExtractos) : TOPE_INICIAL
+}
+
+function leerBloque(valor: string | string[] | undefined): BloqueExtractos {
+  const n = typeof valor === 'string' ? Number(valor) : NaN
+  return (BLOQUES_EXTRACTOS as readonly number[]).includes(n) ? (n as BloqueExtractos) : BLOQUE_INICIAL
 }
 
 export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPageProps) {
@@ -117,16 +125,17 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
   const searchModeLabel = searchMode === 'exact' ? 'Frase exacta' : 'Tema o enseñanza'
 
   // ============================================
-  // FILTROS DE LA MODALIDAD EXACTA
+  // FILTROS
   // Años y orden viajan en la URL, así que la paginación los conserva.
-  // La modalidad semántica los ignora: no cambia en esta etapa.
+  // Los años valen para las dos modalidades; el orden de la Exacta y el de la
+  // Semántica se leen por separado porque admiten valores distintos.
   // ============================================
   const anioDesdeLeido = leerAnio(resolvedSearchParams.desde)
   const anioHastaLeido = leerAnio(resolvedSearchParams.hasta)
   const orden = leerOrden(resolvedSearchParams.orden)
   const huellaParam = leerHuella(resolvedSearchParams.huella)
   const rangoInvalido =
-    searchMode === 'exact' && hasQuery &&
+    hasQuery &&
     (anioDesdeLeido === 'invalido' ||
       anioHastaLeido === 'invalido' ||
       (typeof anioDesdeLeido === 'number' && typeof anioHastaLeido === 'number' && anioDesdeLeido > anioHastaLeido))
@@ -141,8 +150,33 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
     total: 0,
   }
 
+  // Estado de la vista de extractos; solo existe en la modalidad Semántica.
+  const estadoSemantico: EstadoBusquedaSemantica | null =
+    searchMode === 'semantic' && hasQuery
+      ? {
+          query: queryParam,
+          tope: leerTope(resolvedSearchParams.tope),
+          orden: leerOrdenSemantico(resolvedSearchParams.orden),
+          bloque: leerBloque(resolvedSearchParams.bloque),
+          anioDesde,
+          anioHasta,
+          pagina: currentPage,
+        }
+      : null
+  let vistaSemantica: VistaExtractos | null = null
+
   try {
-    if (!rangoInvalido) {
+    if (estadoSemantico && !rangoInvalido) {
+      vistaSemantica = await obtenerVistaExtractos({
+        query: estadoSemantico.query,
+        tope: estadoSemantico.tope,
+        orden: estadoSemantico.orden,
+        bloque: estadoSemantico.bloque,
+        pagina: estadoSemantico.pagina,
+        anioDesde: estadoSemantico.anioDesde,
+        anioHasta: estadoSemantico.anioHasta,
+      })
+    } else if (searchMode === 'exact' && !rangoInvalido) {
       searchResult = await searchArchivoConferencias({
         query: hasQuery ? queryParam : null,
         searchMode,
@@ -193,8 +227,8 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
       ? await getCoberturaBuscador().catch(() => null)
       : null
 
-  const totalPages = searchMode === 'semantic'
-    ? Math.ceil(Math.min(total, MAX_SEMANTIC_RESULTS) / ITEMS_PER_PAGE)
+  const totalPages = vistaSemantica
+    ? vistaSemantica.totalPaginas
     : Math.ceil(total / ITEMS_PER_PAGE)
 
   // Separación de estados:
@@ -202,8 +236,13 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
   // 2) Búsqueda con término pero sin resultados
   // 3) Búsqueda con resultados
   const isIdle = !hasQuery
+  // En la Semántica, «vacío» es que la búsqueda no trajo nada. Si lo trajo pero
+  // el filtro de años lo deja en cero, la vista sigue en pantalla con sus
+  // controles para poder cambiar los años.
   const isEmpty = hasQuery && failedSearchMode === null && !rangoInvalido && !corpusCambiado &&
-    (total === 0 || conferencias.length === 0)
+    (vistaSemantica
+      ? vistaSemantica.extractosTraidos === 0
+      : total === 0 || conferencias.length === 0)
 
   // ============================================
   // ESTACIÓN DE ESTUDIO — lo que se guardaría en la mesa
@@ -219,33 +258,52 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
       : searchMode === 'exact' ? 'exacta'
         : null
 
-  const itemsParaLaMesa: ItemAGuardar[] = modoParaLaMesa
-    ? conferencias.flatMap((conf, idx) => {
-      const contexto =
-        searchMode === 'semantic' ? conf.semanticContext : conf.exactContext
-      if (!contexto) return []
-      return [{
-        pasaje_id: contexto.pasajeId,
-        posicion: (currentPage - 1) * ITEMS_PER_PAGE + idx + 1,
-        similitud:
-          searchMode === 'semantic' && conf.semanticContext
-            ? conf.semanticContext.similitud
-            : null,
-      }]
-    })
-    : []
+  // En la Semántica se guardan los extractos de la página visible (hasta 500,
+  // el máximo de la mesa), con su número en el orden elegido.
+  const itemsParaLaMesa: ItemAGuardar[] = vistaSemantica
+    ? vistaSemantica.grupos.flatMap((grupo) =>
+        grupo.extractos.map((e) => ({
+          pasaje_id: e.pasajeId,
+          posicion: e.posicion,
+          similitud: e.similitud,
+        }))
+      )
+    : modoParaLaMesa
+      ? conferencias.flatMap((conf, idx) => {
+        const contexto = conf.exactContext
+        if (!contexto) return []
+        return [{
+          pasaje_id: contexto.pasajeId,
+          posicion: (currentPage - 1) * ITEMS_PER_PAGE + idx + 1,
+          similitud: null,
+        }]
+      })
+      : []
 
   // Lo que la mesa anota de la búsqueda: con los filtros, el dossier sabe
   // de qué recorte y de qué orden salen sus posiciones.
-  const parametrosParaLaMesa: Record<string, unknown> = {
-    modalidad: searchMode,
-    pagina: currentPage,
-    por_pagina: ITEMS_PER_PAGE,
-    total_alcanzado: total,
-    ...(searchMode === 'exact'
-      ? { anio_desde: anioDesde, anio_hasta: anioHasta, orden, huella_corpus: huella ?? null }
-      : {}),
-  }
+  const parametrosParaLaMesa: Record<string, unknown> = vistaSemantica
+    ? {
+        modalidad: searchMode,
+        vista: 'extractos',
+        pagina: vistaSemantica.pagina,
+        por_pagina: vistaSemantica.bloque,
+        tope: vistaSemantica.tope,
+        orden: vistaSemantica.orden,
+        anio_desde: anioDesde,
+        anio_hasta: anioHasta,
+        total_alcanzado: vistaSemantica.extractosFiltrados,
+        conferencias_alcanzadas: vistaSemantica.conferenciasFiltradas,
+      }
+    : {
+        modalidad: searchMode,
+        pagina: currentPage,
+        por_pagina: ITEMS_PER_PAGE,
+        total_alcanzado: total,
+        ...(searchMode === 'exact'
+          ? { anio_desde: anioDesde, anio_hasta: anioHasta, orden, huella_corpus: huella ?? null }
+          : {}),
+      }
 
   return (
     <div
@@ -318,7 +376,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
                           : isEmpty
                             ? `Ninguna coincidencia encontrada${descripcionRango}.`
                             : searchMode === 'semantic'
-                              ? `Mostrando las ${conferencias.length} conferencias más afines a tu búsqueda.`
+                              ? 'Los pasajes del archivo más cercanos al tema, agrupados por conferencia.'
                               : `Mostrando ${conferencias.length} de ${conSeparadorDeMiles(total)} conferencias${descripcionRango}, ${describirOrden(orden)}.`}
                       <span
                         data-search-mode={searchMode}
@@ -377,6 +435,15 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
                 </p>
               )}
             </>
+          )}
+
+          {estadoSemantico && vistaSemantica && vistaSemantica.extractosTraidos > 0 && (
+            <SemanticControls
+              key={`${queryParam}:${anioDesde}:${anioHasta}`}
+              estado={{ ...estadoSemantico, pagina: vistaSemantica.pagina }}
+              minYear={MIN_YEAR}
+              maxYear={MAX_YEAR}
+            />
           )}
         </div>
 
@@ -492,33 +559,24 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
             {/* La modalidad exacta usa el arbol compacto: hay frase literal que
                 resaltar y una misma conferencia puede traer decenas de
                 coincidencias, que como tarjetas ocuparian metros de pagina.
-                La semantica se queda con las tarjetas. */}
-            {searchMode === 'exact' ? (
+                La semantica muestra sus extractos agrupados por conferencia. */}
+            {vistaSemantica && estadoSemantico ? (
+              <div className="flex flex-col gap-8">
+                <SemanticCounter vista={vistaSemantica} anioDesde={anioDesde} anioHasta={anioHasta} />
+                {vistaSemantica.extractosFiltrados > 0 ? (
+                  <SemanticExtractsList vista={vistaSemantica} query={queryParam} />
+                ) : (
+                  <p role="status" className="rounded-2xl border px-5 py-6" style={{ borderColor: 'rgba(212, 175, 55, 0.22)', color: 'var(--color-text-muted, rgba(255,255,255,0.6))' }}>
+                    {describirRango(anioDesde, anioHasta)} no hay ningún extracto entre los{' '}
+                    {conSeparadorDeMiles(vistaSemantica.tope)} más cercanos. Prueba con otros años o amplía la búsqueda.
+                  </p>
+                )}
+                <SemanticAmpliar estado={{ ...estadoSemantico, pagina: vistaSemantica.pagina }} />
+              </div>
+            ) : (
               <div className="max-w-5xl">
                 <ExactResultsTree conferencias={conferencias} query={queryParam} />
               </div>
-            ) : (
-            <div className="flex max-w-3xl flex-col gap-8">
-              {conferencias.map((conf, idx) => (
-                <div key={conf.id} className="flex flex-col gap-3">
-                  <ConferenceCard
-                    conferencia={conf}
-                    index={idx}
-                    semanticMatch={
-                      searchMode === 'semantic' && conf.semanticContext
-                        ? {
-                            query: queryParam,
-                            context: conf.semanticContext,
-                            afinidad: nivelDeAfinidad(
-                              (currentPage - 1) * ITEMS_PER_PAGE + idx + 1
-                            ),
-                          }
-                        : undefined
-                    }
-                  />
-                </div>
-              ))}
-            </div>
             )}
 
             {/* ============================================
@@ -527,7 +585,7 @@ export default async function ArchivoBusquedaPage({ searchParams }: BusquedaPage
             {totalPages > 1 && (
               <div className="mt-12">
                 <Pagination
-                  currentPage={currentPage}
+                  currentPage={vistaSemantica ? vistaSemantica.pagina : currentPage}
                   totalPages={totalPages}
                   extraParams={searchMode === 'exact' && huella ? { huella } : undefined}
                 />

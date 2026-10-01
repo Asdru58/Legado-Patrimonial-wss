@@ -12,6 +12,7 @@ import 'server-only'
 
 import { createClient } from '@/lib/supabase/server'
 import { encodeBgeQuery } from '@/lib/services/bgeEncoder'
+import { validarExtractoSemantico } from '@/lib/services/semanticExtracts'
 import type { ConferenciaPublica } from '@/types/database'
 
 // ============================================
@@ -309,14 +310,14 @@ type CorpusSemanticSearchRow = {
 }
 
 /**
- * Revalida el contexto Semantico con la misma consulta vectorial y la RPC
- * publica ya autorizada. La URL aporta solo identificadores no confiables.
+ * Revalida el contexto Semantico de un enlace al detalle. La URL aporta solo
+ * identificadores no confiables.
  *
- * Se mantiene deliberadamente en buscar_corpus_semantica (v1) y no en la v2:
- * la v2 aplica un prefiltro ANN que no garantiza exactitud total, de modo que
- * un pasaje legitimo citado en una URL podria quedar fuera de su alcance y
- * romper el enlace compartido. Esta ruta se usa poco, asi que el costo mayor
- * de la busqueda exacta no compensa ese riesgo.
+ * Desde la vista de extractos (2026-10-01) un enlace puede citar cualquiera de
+ * los 5.000 extractos mas cercanos, no solo el mejor de cada conferencia. La
+ * comprobacion usa la misma busqueda que la lista
+ * (buscar_corpus_semantica_extractos, comparacion exacta y determinista), y
+ * suele encontrarla ya en memoria porque el usuario viene de esa lista.
  */
 export async function getValidatedSemanticPassage(
   params: Readonly<{
@@ -325,55 +326,24 @@ export async function getValidatedSemanticPassage(
     conferenceId: string
   }>
 ): Promise<ValidatedSemanticPassage | null> {
-  const query = params.query.trim()
+  try {
+    const extracto = await validarExtractoSemantico({
+      query: params.query,
+      pasajeId: params.passageId,
+      conferenciaId: params.conferenceId,
+    })
 
-  if (
-    !query ||
-    query.length > MAX_QUERY_LENGTH ||
-    !UUID_REGEX.test(params.passageId) ||
-    !UUID_REGEX.test(params.conferenceId)
-  ) {
+    return extracto
+      ? {
+          pasajeId: extracto.pasajeId,
+          paginaInicio: extracto.paginaInicio,
+          paginaFin: extracto.paginaFin,
+          texto: extracto.texto,
+        }
+      : null
+  } catch (error) {
+    console.error('[getValidatedSemanticPassage] validation error:', error)
     return null
-  }
-
-  const encoded = await encodeBgeQuery(query)
-  const supabase = await createClient()
-  const { data: rawRows, error } = await supabase.rpc(
-    'buscar_corpus_semantica',
-    {
-      consulta_vector: encoded.vector,
-      resultado_limit: MAX_LIMIT,
-      resultado_offset: 0,
-    }
-  )
-
-  if (error) {
-    console.error('[getValidatedSemanticPassage] RPC error:', error)
-    return null
-  }
-
-  const row = ((rawRows ?? []) as CorpusSemanticSearchRow[]).find(
-    (candidate) =>
-      candidate.pasaje_id === params.passageId &&
-      candidate.conferencia_id === params.conferenceId
-  )
-
-  if (
-    !row ||
-    typeof row.texto !== 'string' ||
-    !Number.isSafeInteger(row.pagina_inicio) ||
-    !Number.isSafeInteger(row.pagina_fin) ||
-    row.pagina_inicio < 1 ||
-    row.pagina_fin < row.pagina_inicio
-  ) {
-    return null
-  }
-
-  return {
-    pasajeId: row.pasaje_id,
-    paginaInicio: row.pagina_inicio,
-    paginaFin: row.pagina_fin,
-    texto: row.texto,
   }
 }
 
